@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/layout/head}"></head>
+<script th:src="@{/static/dashboard.js}" type="text/javascript"></script>
+<body>
+<div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
+<h3>Hello <b th:text="${user.getDisplayName()}"></b></h3>
+<div class="ui-footer" th:insert="~{/layout/footer}"></div>
+</body>
+</html>

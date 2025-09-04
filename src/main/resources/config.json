@@ -1,0 +1,20 @@
+{
+  "database": {
+    "uri": "jdbc:mariadb://localhost:3306/dev",
+    "username": "dev",
+    "password": "dev"
+  },
+  "oauth": [
+    {
+      "name": "",
+      "clientId": "",
+      "secret": "",
+      "scope": "",
+      "redirectUrl": "",
+      "authorizationUrl": "",
+      "tokenUrl": "",
+      "userInfoUrl": "",
+      "userNameAttributeName": ""
+    }
+  ]
+}
