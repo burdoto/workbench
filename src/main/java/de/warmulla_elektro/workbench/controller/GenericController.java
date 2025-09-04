@@ -50,7 +50,7 @@ public class GenericController {
             displayInfoText = "Kunde: %s".formatted(customer);
             display         = entries.findByCustomerNameOrderByStartTimeAsc(customer);
         } else {
-            displayInfoText = "Aktuelle Woche";
+            displayInfoText = "Aktuelle Kalenderwoche";
             display         = entries.findThisWeekByUser(user);
         }
 
