@@ -12,6 +12,13 @@ import java.time.LocalDateTime;
 @Embeddable
 @EqualsAndHashCode(of = "time")
 public class Interruption {
+    public static Interruption parse(String parse) {
+        var split    = parse.split(", ");
+        var time     = TimetableEntry.HOUR_FORMATTER.parse(split[0]);
+        var duration = Polyfill.parseDuration(split[1]);
+        return new Interruption().setTime(LocalDateTime.from(time)).setDuration(duration);
+    }
+
     LocalDateTime time;
     Duration      duration;
 

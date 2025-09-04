@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.comroid.annotations.Readonly;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,9 +29,10 @@ public class TimetableEntry {
     LocalDateTime endTime;
     @ElementCollection @CollectionTable(name = "workbench_timetable_interruptions")
     Collection<Interruption> interruptions;
-    String notes;
+    @Nullable String notes;
     @ElementCollection @CollectionTable(name = "workbench_timetable_assignments")
     Collection<WorkerAssignment> assignments;
+    @ManyToOne User createdBy;
 
     public String getDayText() {
         return startTime.format(DATE_FORMATTER);

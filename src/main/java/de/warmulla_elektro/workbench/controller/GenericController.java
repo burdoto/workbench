@@ -1,17 +1,22 @@
 package de.warmulla_elektro.workbench.controller;
 
 import de.warmulla_elektro.workbench.model.ErrorInfo;
+import de.warmulla_elektro.workbench.model.entity.Interruption;
 import de.warmulla_elektro.workbench.model.entity.TimetableEntry;
+import de.warmulla_elektro.workbench.model.entity.WorkerAssignment;
+import de.warmulla_elektro.workbench.repo.CustomerRepo;
 import de.warmulla_elektro.workbench.repo.TimetableEntryRepo;
 import de.warmulla_elektro.workbench.repo.UserRepo;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,6 +29,7 @@ import java.util.Optional;
 @RequestMapping
 public class GenericController {
     @Autowired UserRepo           users;
+    @Autowired CustomerRepo customers;
     @Autowired TimetableEntryRepo entries;
 
     @GetMapping("/")
@@ -59,6 +65,28 @@ public class GenericController {
         model.addAttribute("displayInfoText", displayInfoText);
 
         return "timetable";
+    }
+
+    @PutMapping("/timetable")
+    public String timetable(
+            HttpSession session, @RequestParam @NotNull String customerName,
+            @RequestParam @NotNull LocalDateTime startTime, @RequestParam @NotNull LocalDateTime endTime,
+            @RequestParam @NotNull Collection<String> interruptions, @RequestParam @NotNull String notes,
+            @RequestParam @NotNull Collection<String> assignments
+    ) {
+        var user     = users.get(session).orElseThrow();
+        var customer = customers.findById(customerName).orElseThrow();
+        var entry = new TimetableEntry().setCustomer(customer)
+                .setStartTime(startTime)
+                .setEndTime(endTime)
+                .setInterruptions(interruptions.stream().map(Interruption::parse).toList())
+                .setNotes(notes)
+                .setAssignments(assignments.stream().map(WorkerAssignment::parse).toList())
+                .setCreatedBy(user);
+
+        entries.save(entry);
+
+        return "redirect:/timetable";
     }
 
     @GetMapping("/error")
