@@ -12,4 +12,9 @@ import lombok.EqualsAndHashCode;
 @Table(name = "workbench_customers")
 public class Customer {
     @Id String name;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

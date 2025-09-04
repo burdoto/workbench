@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import org.comroid.annotations.Readonly;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -19,8 +20,10 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 @Table(name = "workbench_timetable_entries")
 public class TimetableEntry {
-    @Readonly @Id UUID     id = UUID.randomUUID();
-    @ManyToOne    Customer customer;
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EE dd.MM.yy");
+    public static final DateTimeFormatter HOUR_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    @Readonly @Id       UUID              id             = UUID.randomUUID();
+    @ManyToOne          Customer          customer;
     LocalDateTime startTime;
     LocalDateTime endTime;
     @ElementCollection @CollectionTable(name = "workbench_timetable_interruptions")
@@ -28,4 +31,32 @@ public class TimetableEntry {
     String notes;
     @ElementCollection @CollectionTable(name = "workbench_timetable_assignments")
     Collection<WorkerAssignment> assignments;
+
+    public String getDayText() {
+        return startTime.format(DATE_FORMATTER);
+    }
+
+    public String getStartTimeText() {
+        return startTime.format(HOUR_FORMATTER);
+    }
+
+    public String getEndTimeText() {
+        return endTime.format(HOUR_FORMATTER);
+    }
+
+    public String getBreaksSummaryText() {
+        return switch (interruptions.size()) {
+            case 0 -> "Keine";
+            case 1 -> interruptions.stream().findAny().orElseThrow().toString();
+            default -> "%d...".formatted(interruptions.size());
+        };
+    }
+
+    public String getAssignmentsSummaryText() {
+        return switch (assignments.size()) {
+            case 0 -> "Keine";
+            case 1 -> assignments.stream().findAny().orElseThrow().toString();
+            default -> "%d...".formatted(assignments.size());
+        };
+    }
 }

@@ -9,4 +9,9 @@ import lombok.EqualsAndHashCode;
 public class WorkerAssignment {
     @ManyToOne User user;
     String notes;
+
+    @Override
+    public String toString() {
+        return user.getDisplayName();
+    }
 }

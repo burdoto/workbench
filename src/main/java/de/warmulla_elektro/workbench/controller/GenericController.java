@@ -1,23 +1,29 @@
 package de.warmulla_elektro.workbench.controller;
 
 import de.warmulla_elektro.workbench.model.ErrorInfo;
+import de.warmulla_elektro.workbench.model.entity.TimetableEntry;
+import de.warmulla_elektro.workbench.repo.TimetableEntryRepo;
 import de.warmulla_elektro.workbench.repo.UserRepo;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 @Controller
 @RequestMapping
 public class GenericController {
-    @Autowired UserRepo users;
+    @Autowired UserRepo           users;
+    @Autowired TimetableEntryRepo entries;
 
     @GetMapping("/")
     public String index() {
@@ -25,8 +31,19 @@ public class GenericController {
     }
 
     @GetMapping("/timetable")
-    public String timetable(Model model, HttpSession session) {
-        model.addAttribute("user", users.get(session).orElseThrow());
+    public String timetable(
+            Model model, HttpSession session, @RequestParam(required = false) @Nullable Byte week,
+            @RequestParam(required = false) @Nullable String customer
+    ) {
+        var                        user = users.get(session).orElseThrow();
+        Collection<TimetableEntry> display;
+
+        if (week != null) display = entries.findWeekByUser(user, week);
+        else if (customer != null) display = entries.findByCustomerNameOrderByStartTimeAsc(customer);
+        else display = entries.findThisWeekByUser(user);
+
+        model.addAttribute("user", user);
+        model.addAttribute("entries", display);
         return "timetable";
     }
 
