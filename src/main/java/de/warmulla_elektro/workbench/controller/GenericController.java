@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,18 +33,31 @@ public class GenericController {
 
     @GetMapping("/timetable")
     public String timetable(
-            Model model, HttpSession session, @RequestParam(required = false) @Nullable Byte week,
+            Model model, HttpSession session, @RequestParam(required = false) @Nullable Short year,
+            @RequestParam(required = false) @Nullable Byte week,
             @RequestParam(required = false) @Nullable String customer
     ) {
         var                        user = users.get(session).orElseThrow();
+        String displayInfoText;
         Collection<TimetableEntry> display;
 
-        if (week != null) display = entries.findWeekByUser(user, week);
-        else if (customer != null) display = entries.findByCustomerNameOrderByStartTimeAsc(customer);
-        else display = entries.findThisWeekByUser(user);
+        if (year == null) year = (short) LocalDateTime.now().getYear();
+
+        if (week != null) {
+            displayInfoText = "Kalenderwoche: %d in %d".formatted(week, year);
+            display         = entries.findWeekByUser(user, year, week);
+        } else if (customer != null) {
+            displayInfoText = "Kunde: %s".formatted(customer);
+            display         = entries.findByCustomerNameOrderByStartTimeAsc(customer);
+        } else {
+            displayInfoText = "Aktuelle Woche";
+            display         = entries.findThisWeekByUser(user);
+        }
 
         model.addAttribute("user", user);
         model.addAttribute("entries", display);
+        model.addAttribute("displayInfoText", displayInfoText);
+
         return "timetable";
     }
 

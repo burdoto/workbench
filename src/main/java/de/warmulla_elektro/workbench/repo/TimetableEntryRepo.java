@@ -26,8 +26,9 @@ public interface TimetableEntryRepo extends CrudRepository<TimetableEntry, UUID>
             select te from TimetableEntry te
                 join fetch te.assignments assignment
                 where assignment.user = :user
+                  and YEAR(te.startTime) = :year
                   and WEEK(te.startTime) = :week
                 order by te.startTime asc
             """)
-    Collection<TimetableEntry> findWeekByUser(User user, int week);
+    Collection<TimetableEntry> findWeekByUser(User user, int year, int week);
 }
