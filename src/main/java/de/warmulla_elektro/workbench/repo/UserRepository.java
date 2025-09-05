@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Repository
-public interface UserRepo extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<User, String> {
     @ApiStatus.Internal
     default Optional<User> get(HttpSession session) {
         if (Debug.isDebug()) {

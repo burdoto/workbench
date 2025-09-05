@@ -11,3 +11,6 @@ spring:
       initialize-schema: always
   jpa:
     generate-ddl: true
+  data:
+    rest:
+      base-path: /api

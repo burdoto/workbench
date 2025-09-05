@@ -6,7 +6,7 @@
 <div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
 <div class="ui-panel-1">
     <h2>Filter</h2>
-    <div class="ui-panel-2">
+    <div class="ui-panel-2" id="panel-filter-week">
         <h3>Nach Kalenderwoche</h3>
         <form method="get" th:action="@{/timetable}">
             <label for="filter-year">Jahr:</label>
@@ -16,7 +16,7 @@
             <input type="submit" value="Anwenden">
         </form>
     </div>
-    <div class="ui-panel-2">
+    <div class="ui-panel-2" id="panel-filter-customer">
         <h3>Nach Kunde</h3>
         <form method="get" th:action="@{/timetable}">
             <label for="filter-customer">Kunde:</label>
@@ -50,6 +50,9 @@
     </tr>
     </tbody>
 </table>
+<div class="ui-panel-1">
+    <h2>Eintrag erstellen</h2>
+</div>
 <div class="ui-footer" th:insert="~{/layout/footer}"></div>
 </body>
 </html>

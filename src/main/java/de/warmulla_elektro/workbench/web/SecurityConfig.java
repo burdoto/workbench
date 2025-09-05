@@ -46,7 +46,7 @@ public class SecurityConfig {
     @Bean
     @ConditionalOnMissingBean(ClientRegistrationRepository.class)
     public SecurityFilterChain configureInsecure(HttpSecurity http) throws Exception {
-        log.warning("Using insecure SecurityFilterChain");
+        log.warning("Using insecure SecurityFilterChain; consider configuring OAuth2 providers!");
         return http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
@@ -56,9 +56,9 @@ public class SecurityConfig {
     @ConditionalOnBean(ClientRegistrationRepository.class)
     public SecurityFilterChain configureSecure(HttpSecurity http) throws Exception {
         log.info("Using OAuth2-based SecurityFilterChain");
-        return http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .oauth2Login(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .build();
+        return http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/**")
+                .fullyAuthenticated()
+                .anyRequest()
+                .authenticated()).oauth2Login(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable).build();
     }
 }

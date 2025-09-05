@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Repository
-public interface TimetableEntryRepo extends CrudRepository<TimetableEntry, UUID> {
+public interface TimetableEntryRepository extends CrudRepository<TimetableEntry, UUID> {
     Collection<TimetableEntry> findByCustomerNameOrderByStartTimeAsc(String customerName);
 
     @Query("""

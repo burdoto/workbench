@@ -4,9 +4,9 @@ import de.warmulla_elektro.workbench.model.ErrorInfo;
 import de.warmulla_elektro.workbench.model.entity.Interruption;
 import de.warmulla_elektro.workbench.model.entity.TimetableEntry;
 import de.warmulla_elektro.workbench.model.entity.WorkerAssignment;
-import de.warmulla_elektro.workbench.repo.CustomerRepo;
-import de.warmulla_elektro.workbench.repo.TimetableEntryRepo;
-import de.warmulla_elektro.workbench.repo.UserRepo;
+import de.warmulla_elektro.workbench.repo.CustomerRepository;
+import de.warmulla_elektro.workbench.repo.TimetableEntryRepository;
+import de.warmulla_elektro.workbench.repo.UserRepository;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,9 +29,9 @@ import java.util.Optional;
 @Controller
 @RequestMapping
 public class GenericController {
-    @Autowired UserRepo           users;
-    @Autowired CustomerRepo customers;
-    @Autowired TimetableEntryRepo entries;
+    @Autowired UserRepository           users;
+    @Autowired CustomerRepository       customers;
+    @Autowired TimetableEntryRepository entries;
 
     @GetMapping("/")
     public String index() {
@@ -71,17 +72,17 @@ public class GenericController {
     public String timetable(
             HttpSession session, @RequestParam @NotNull String customerName,
             @RequestParam @NotNull LocalDateTime startTime, @RequestParam @NotNull LocalDateTime endTime,
-            @RequestParam @NotNull Collection<String> interruptions, @RequestParam @NotNull String notes,
-            @RequestParam @NotNull Collection<String> assignments
+            @RequestParam @NotNull String interruptions, @RequestParam @NotNull String notes,
+            @RequestParam @NotNull String assignments
     ) {
         var user     = users.get(session).orElseThrow();
         var customer = customers.findById(customerName).orElseThrow();
         var entry = new TimetableEntry().setCustomer(customer)
                 .setStartTime(startTime)
                 .setEndTime(endTime)
-                .setInterruptions(interruptions.stream().map(Interruption::parse).toList())
+                .setInterruptions(Arrays.stream(interruptions.split(";")).map(Interruption::parse).toList())
                 .setNotes(notes)
-                .setAssignments(assignments.stream().map(WorkerAssignment::parse).toList())
+                .setAssignments(Arrays.stream(assignments.split(";")).map(WorkerAssignment::parse).toList())
                 .setCreatedBy(user);
 
         entries.save(entry);
