@@ -11,13 +11,13 @@ import org.jetbrains.annotations.Nullable;
 @Data
 @Embeddable
 @EqualsAndHashCode(of = "user")
-public class WorkerAssignment {
-    public static WorkerAssignment parse(String parse) {
+public class Assignment {
+    public static Assignment parse(String parse) {
         var split    = parse.split(": *");
         var username = split[0];
         var user = ApplicationContextProvider.bean(UserRepository.class).findById(username).orElseThrow();
         var notes    = split.length > 1 ? split[1] : null;
-        return new WorkerAssignment().setUser(user).setNotes(notes);
+        return new Assignment().setUser(user).setNotes(notes);
     }
 
     @ManyToOne User   user;

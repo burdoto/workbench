@@ -31,7 +31,7 @@ public class TimetableEntry {
     Collection<Interruption> interruptions;
     @Nullable String notes;
     @ElementCollection @CollectionTable(name = "workbench_timetable_assignments")
-    Collection<WorkerAssignment> assignments;
+    Collection<Assignment> assignments;
     @ManyToOne User createdBy;
 
     public String getDayText() {
