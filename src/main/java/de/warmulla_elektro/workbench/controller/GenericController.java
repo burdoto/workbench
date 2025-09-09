@@ -1,12 +1,9 @@
 package de.warmulla_elektro.workbench.controller;
 
-import de.warmulla_elektro.workbench.model.ErrorInfo;
 import de.warmulla_elektro.workbench.model.entity.TimetableEntry;
 import de.warmulla_elektro.workbench.repo.CustomerRepository;
 import de.warmulla_elektro.workbench.repo.TimetableEntryRepository;
 import de.warmulla_elektro.workbench.repo.UserRepository;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 @RequestMapping
@@ -61,19 +56,5 @@ public class GenericController {
         model.addAttribute("displayInfoText", displayInfoText);
 
         return "timetable";
-    }
-
-    @GetMapping("/error")
-    public String error(Model model, HttpServletRequest request) {
-        var ex   = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-        int code = (int) Objects.requireNonNullElse(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE), 500);
-        var uri = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI))
-                .map(Object::toString)
-                .orElse(null);
-        var msg = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_MESSAGE))
-                .map(Object::toString)
-                .orElse(null);
-        model.addAttribute("error", ErrorInfo.create(ex, code, uri, msg));
-        return "error";
     }
 }

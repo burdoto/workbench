@@ -44,21 +44,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    @ConditionalOnMissingBean(ClientRegistrationRepository.class)
-    public SecurityFilterChain configureInsecure(HttpSecurity http) throws Exception {
-        log.warning("Using insecure SecurityFilterChain; consider configuring OAuth2 providers!");
-        return http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .csrf(AbstractHttpConfigurer::disable)
-                .build();
-    }
-
-    @Bean
     @ConditionalOnBean(ClientRegistrationRepository.class)
+    @ConditionalOnMissingBean(type = "org.springframework.boot.test.mock.mockito.MockitoPostProcessor")
     public SecurityFilterChain configureSecure(HttpSecurity http) throws Exception {
         log.info("Using OAuth2-based SecurityFilterChain");
         return http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/**")
                 .fullyAuthenticated()
                 .anyRequest()
                 .authenticated()).oauth2Login(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable).build();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ClientRegistrationRepository.class)
+    public SecurityFilterChain configureInsecure(HttpSecurity http) throws Exception {
+        log.warning("Using insecure SecurityFilterChain; consider configuring OAuth2 providers!");
+        return http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
     }
 }

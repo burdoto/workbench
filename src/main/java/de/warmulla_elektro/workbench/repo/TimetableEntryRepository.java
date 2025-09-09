@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -45,7 +45,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
 
     @Modifying
     @Transactional
-    @PutMapping("createInterruption")
+    @PostMapping("createInterruption")
     @Query(nativeQuery = true, value = """
             insert into workbench_timetable_interruptions (timetable_entry_id, time, duration)
             values (:entryId, :time, :duration);
@@ -57,7 +57,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
 
     @Modifying
     @Transactional
-    @PutMapping("createAssignment")
+    @PostMapping("createAssignment")
     @Query(nativeQuery = true, value = """
             insert into workbench_timetable_assignments (timetable_entry_id, user_username, notes)
             values (:entryId, :username, :notes);
