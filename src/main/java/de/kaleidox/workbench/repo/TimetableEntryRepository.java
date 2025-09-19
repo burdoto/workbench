@@ -25,24 +25,25 @@ import java.util.UUID;
 public interface TimetableEntryRepository extends CrudRepository<TimetableEntry, UUID> {
     Collection<TimetableEntry> findByCustomerNameOrderByStartTimeAsc(String customerName);
 
+    // todo why wont this fucking work and not show up creator's but unassigned entried??
     @Query("""
-            select te from TimetableEntry te
-                join fetch te.assignments assignment
-                where assignment.user.username = :username
-                  and WEEK(te.startTime) = WEEK(NOW())
-                order by te.startTime asc
+            select timetable_entry from TimetableEntry timetable_entry
+                left join fetch timetable_entry.assignments assignment
+                where (timetable_entry.createdBy.username = :username or assignment.user.username = :username)
+                  and WEEK(timetable_entry.startTime) = WEEK(NOW())
+                order by timetable_entry.startTime asc
             """)
     Collection<TimetableEntry> findThisWeekByUser(String username);
 
     @Query("""
-            select te from TimetableEntry te
-                join fetch te.assignments assignment
-                where assignment.user.username = :username
-                  and YEAR(te.startTime) = :year
-                  and WEEK(te.startTime) = :week
-                order by te.startTime asc
+            select timetable_entry from TimetableEntry timetable_entry
+                left join fetch timetable_entry.assignments assignment
+                where (timetable_entry.createdBy.username = :username or assignment.user.username = :username)
+                  and YEAR(timetable_entry.startTime) = :year
+                  and WEEK(timetable_entry.startTime) = :week
+                order by timetable_entry.startTime asc
             """)
-    Collection<TimetableEntry> findWeekByUser(String username, int year, int week);
+    Collection<TimetableEntry> findWeekByUser(String username, short year, byte week);
 
     @Modifying
     @ResponseBody
@@ -50,7 +51,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @PostMapping("create")
     @Query(nativeQuery = true, value = """
             insert into timetable_entry (id, customer_name, start_time, end_time, notes, created_by_username)
-            values (UUID(), ?#{#data.customerName()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
+                values (UUID(), ?#{#data.customerName()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void create(@Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
 
@@ -60,7 +61,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @PostMapping("createInterruption")
     @Query(nativeQuery = true, value = """
             insert into timetable_entry_interruptions (timetable_entry_id, time, duration, created_by_username)
-            values (?#{#data.entryId()}, ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
+                values (?#{#data.entryId()}, ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
             """)
     void createInterruption(
             @Param("auth") Authentication auth, @Param("data") @RequestBody Interruption.CreateData data);
@@ -71,7 +72,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @PostMapping("createAssignment")
     @Query(nativeQuery = true, value = """
             insert into timetable_entry_assignments (timetable_entry_id, user_username, notes, created_by_username)
-            values (?#{#data.entryId()}, ?#{#data.username()}, ?#{#data.notes()}, ?#{#auth.name});
+                values (?#{#data.entryId()}, ?#{#data.username()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void createAssignment(@Param("auth") Authentication auth, @Param("data") @RequestBody Assignment.CreateData data);
 }

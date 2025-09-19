@@ -65,29 +65,27 @@ public class SecurityConfig {
     public SecurityFilterChain configureInsecure(HttpSecurity http) throws Exception {
         log.warning("Using insecure SecurityFilterChain; consider configuring OAuth2 providers!");
         return http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/**")
-                        .authenticated()
-                        .anyRequest()
-                        .permitAll())
-                .httpBasic(Customizer.withDefaults())
-                .userDetailsService(username -> new UserDetails() {
-                    // token for dev: ZGV2Og==
+                .authenticated()
+                .anyRequest()
+                .permitAll()).httpBasic(Customizer.withDefaults()).userDetailsService(username -> new UserDetails() {
+            // token for dev: ZGV2Og==
 
-                    @Override
-                    public Collection<? extends GrantedAuthority> getAuthorities() {
-                        return List.of();
-                    }
+            {}
 
-                    @Override
-                    public String getPassword() {
-                        return "{noop}";
-                    }
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return List.of();
+            }
 
-                    @Override
-                    public String getUsername() {
-                        return username;
-                    }
-                })
-                .csrf(AbstractHttpConfigurer::disable)
-                .build();
+            @Override
+            public String getPassword() {
+                return "{noop}";
+            }
+
+            @Override
+            public String getUsername() {
+                return username;
+            }
+        }).csrf(AbstractHttpConfigurer::disable).build();
     }
 }

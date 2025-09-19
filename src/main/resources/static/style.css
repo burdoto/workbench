@@ -164,16 +164,20 @@ body {
     background-color: var(--button-hover-background-color);
 }
 
+.minor {
+    font-size: 90%;
+}
+
 .ui-panel-1 {
     border: 5px groove #1c1c1c;
-    padding: 15px;
-    padding-top: 0;
+    padding: 0 15px 15px;
+    margin-bottom: 10px;
 }
 
 .ui-panel-2 {
     border: 2.5px groove grey;
-    padding: 10px;
-    padding-top: 0;
+    padding: 0 10px 10px;
+    margin-bottom: 7px;
 }
 
 /* utility components */

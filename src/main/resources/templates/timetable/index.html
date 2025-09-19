@@ -4,7 +4,7 @@
 <script th:src="@{/static/timetable.js}" type="text/javascript"></script>
 <body onload="init()">
 <div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
-<div class="ui-panel-1">
+<div class="minor ui-panel-1">
     <h2>Filter</h2>
     <div class="ui-panel-2" id="panel-filter-week">
         <h3>Nach Kalenderwoche</h3>
@@ -25,33 +25,32 @@
         </form>
     </div>
 </div>
-<h2 th:text="${displayInfoText}"></h2>
-<table>
-    <thead>
-    <tr>
-        <th>Tag</th>
-        <th>Kunde</th>
-        <th>Begonnen</th>
-        <th>Beendet</th>
-        <th>Pausen</th>
-        <th>Bemerkungen</th>
-        <th>Zuweisungen</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="entry: ${entries}">
-        <td th:text="${entry.getDayText()}"></td>
-        <td th:text="${entry.getCustomer()}"></td>
-        <td th:text="${entry.getStartTimeText()}"></td>
-        <td th:text="${entry.getEndTimeText()}"></td>
-        <td th:text="${entry.getBreaksSummaryText()}"></td>
-        <td th:text="${entry.getNotes()}"></td>
-        <td th:text="${entry.getAssignmentsSummaryText()}"></td>
-    </tr>
-    </tbody>
-</table>
 <div class="ui-panel-1">
-    <h2>Eintrag erstellen</h2>
+    <h2 th:text="${displayInfoText}"></h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Tag</th>
+            <th>Kunde</th>
+            <th>Begonnen</th>
+            <th>Beendet</th>
+            <th>Unterbrechungen</th>
+            <th>Bemerkungen</th>
+            <th>Zuweisungen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="entry: ${entries}">
+            <td th:text="${entry.getDayText()}"></td>
+            <td th:text="${entry.getCustomer()}"></td>
+            <td th:text="${entry.getStartTimeText()}"></td>
+            <td th:text="${entry.getEndTimeText()}"></td>
+            <td th:text="${entry.getBreaksSummaryText()}"></td>
+            <td th:text="${entry.getNotes()}"></td>
+            <td th:text="${entry.getAssignmentsSummaryText()}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div class="ui-footer" th:insert="~{/layout/footer}"></div>
 </body>
