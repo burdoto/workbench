@@ -1,0 +1,26 @@
+package de.kaleidox.workbench.controller;
+
+import de.kaleidox.workbench.model.jpa.representant.User;
+import de.kaleidox.workbench.repo.CustomerRepository;
+import de.kaleidox.workbench.repo.TimetableEntryRepository;
+import de.kaleidox.workbench.repo.UserRepository;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping("/api")
+public class ApiController {
+    @Autowired UserRepository           users;
+    @Autowired CustomerRepository       customers;
+    @Autowired TimetableEntryRepository entries;
+
+    @ResponseBody
+    @GetMapping("/me")
+    public User me(HttpSession session) {
+        return users.get(session).orElseThrow();
+    }
+}
