@@ -8,9 +8,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.comroid.api.Polyfill;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Embeddable
@@ -33,4 +35,6 @@ public class Interruption {
     public String toString() {
         return "%s, %s".formatted(time.format(TimetableEntry.HOUR_FORMATTER), Polyfill.durationString(duration, 1));
     }
+
+    public record CreateData(@NotNull UUID entryId, @NotNull LocalDateTime time, @NotNull Duration duration) {}
 }

@@ -7,7 +7,10 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 @Data
 @Embeddable
@@ -29,4 +32,6 @@ public class Assignment {
     public String toString() {
         return user.getDisplayName();
     }
+
+    public record CreateData(@NotNull UUID entryId, @NotNull String username, @Nullable String notes) {}
 }

@@ -9,7 +9,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @EqualsAndHashCode(of = "username")
 public class User {
-    public static final User   DEV = new User().setUsername("dev").setDisplayName("Developer");
-    @Id                 String username;
+    public static final User DEV = new User().setUsername("dev").setDisplayName("Developer");
+
+    @Id String username;
     String displayName;
 }

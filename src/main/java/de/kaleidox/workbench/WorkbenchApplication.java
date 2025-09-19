@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @Log
 @SpringBootApplication
+@ImportResource({ "classpath:beans.xml" })
 @EnableJpaRepositories(basePackages = "de.kaleidox.workbench.repo")
 @EntityScan(basePackages = "de.kaleidox.workbench.model.jpa")
 public class WorkbenchApplication {

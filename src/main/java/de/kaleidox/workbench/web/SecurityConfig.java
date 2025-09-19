@@ -9,9 +9,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -19,6 +22,8 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @Log
 @Configuration
@@ -55,10 +60,33 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order
     @ConditionalOnMissingBean(ClientRegistrationRepository.class)
     public SecurityFilterChain configureInsecure(HttpSecurity http) throws Exception {
         log.warning("Using insecure SecurityFilterChain; consider configuring OAuth2 providers!");
-        return http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        return http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/**")
+                        .authenticated()
+                        .anyRequest()
+                        .permitAll())
+                .httpBasic(Customizer.withDefaults())
+                .userDetailsService(username -> new UserDetails() {
+                    // token for dev: ZGV2Og==
+
+                    @Override
+                    public Collection<? extends GrantedAuthority> getAuthorities() {
+                        return List.of();
+                    }
+
+                    @Override
+                    public String getPassword() {
+                        return "{noop}";
+                    }
+
+                    @Override
+                    public String getUsername() {
+                        return username;
+                    }
+                })
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
