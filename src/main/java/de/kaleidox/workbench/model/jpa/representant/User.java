@@ -2,6 +2,7 @@ package de.kaleidox.workbench.model.jpa.representant;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "users")
 @EqualsAndHashCode(of = "username")
 public class User {
     public static final User DEV = new User().setUsername("dev").setDisplayName("Developer");

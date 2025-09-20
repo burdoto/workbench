@@ -17,20 +17,18 @@ public class UserApiTest {
     public static final User USER_1 = new User("user1", "User One");
     public static final User USER_2 = new User("user2", "User Two");
 
-    @Autowired
-    private UserRepository   users;
-    @Autowired
-    private TestRestTemplate rest;
+    @Autowired private UserRepository   users;
+    @Autowired private TestRestTemplate rest;
 
     @Test
-    @Order(0)
+    @Order(Integer.MIN_VALUE)
     void contextLoads() {
         assertNotNull(users);
     }
 
     @Test
     @Order(1)
-    public void fetchSelf() {
+    void fetchSelf() {
         var self = rest.getForEntity("http://localhost:8080/api/me", User.class).getBody();
 
         assertNotNull(self, "self not found");
@@ -40,7 +38,7 @@ public class UserApiTest {
 
     @Test
     @Order(10)
-    public void createUsers() {
+    void createUsers() {
         for (var user : List.of(USER_1, USER_2)) {
             var response = rest.postForEntity("http://localhost:8080/api/users", user, Void.class);
             assertEquals(201, response.getStatusCode().value(), "status code mismatch");

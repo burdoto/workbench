@@ -31,7 +31,7 @@ public class CustomerApiTest {
 
     @Test
     @Order(10)
-    public void createCustomers() {
+    void createCustomers() {
         for (var customer : List.of(FAARQUARDT_CASTLE, FAARQUARDT_HOUSE)) {
             var response = rest.postForEntity("http://localhost:8080/api/customers", customer, Void.class);
             assertEquals(201, response.getStatusCode().value(), "status code mismatch");

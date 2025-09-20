@@ -19,4 +19,9 @@ public class TimetableApiTest {
     void contextLoads() {
         assertNotNull(entries);
     }
+
+    @Test
+    @Order(10)
+    void createTimetableEntries() {
+    }
 }
