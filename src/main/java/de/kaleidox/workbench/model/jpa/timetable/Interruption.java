@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Embeddable
@@ -36,5 +35,10 @@ public class Interruption {
         return "%s, %s".formatted(time.format(TimetableEntry.HOUR_FORMATTER), Polyfill.durationString(duration, 1));
     }
 
-    public record CreateData(@NotNull UUID entryId, @NotNull LocalDateTime time, @NotNull Duration duration) {}
+    public record CreateData(
+            @NotNull String customerName,
+            @NotNull LocalDateTime entryStartTime,
+            @NotNull LocalDateTime time,
+            @NotNull Duration duration
+    ) {}
 }

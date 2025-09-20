@@ -50,4 +50,9 @@ public class TimetableController {
 
         return "timetable/index";
     }
+
+    @GetMapping("/create")
+    public String create() {
+        return "timetable/create_entry";
+    }
 }

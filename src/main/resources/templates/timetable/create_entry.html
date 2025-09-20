@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/layout/head}"></head>
+<script th:src="@{/static/timetable.js}" type="text/javascript"></script>
+<body onload="init()">
+<div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
+<form class="ui-panel-1">
+    <label for="input-customerName">Kunde</label><input id="input-customerName" name="customerName" required type="text">
+    <label for="input-startTime">Anfang</label><input class="input-datetime" id="input-startTime" name="startTime" required type="datetime-local" value="now">
+    <label for="input-endTime">Ende</label><input class="input-datetime" id="input-endTime" name="endTime" required type="datetime-local" value="now">
+    <label for="input-notes">Beschreibung</label><input id="input-notes" name="notes" type="text">
+    <input onclick="submitCreateEntry()" type="submit">
+</form>
+<div class="ui-footer" th:insert="~{/layout/footer}"></div>
+</body>
+</html>

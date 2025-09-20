@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
-import java.util.UUID;
 
 @Controller
 @Repository
 @RequestMapping("/api/timetableEntries")
-public interface TimetableEntryRepository extends CrudRepository<TimetableEntry, UUID> {
+public interface TimetableEntryRepository extends CrudRepository<TimetableEntry, TimetableEntry.CompositeKey> {
     Collection<TimetableEntry> findByCustomerNameOrderByStartTimeAsc(String customerName);
 
     // todo why wont this fucking work and not show up creator's but unassigned entried??
@@ -50,18 +49,20 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("create")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry (id, customer_name, start_time, end_time, notes, created_by_username)
-                values (UUID(), ?#{#data.customerName()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
+            insert into timetable_entry (customer_name, start_time, end_time, notes, created_by_username)
+                values (?#{#data.customerName()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
-    void create(@Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
+    void create(
+            @Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
 
     @Modifying
     @ResponseBody
     @Transactional
     @PostMapping("createInterruption")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry_interruptions (timetable_entry_id, time, duration, created_by_username)
-                values (?#{#data.entryId()}, ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
+            insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_start_time, time, duration, created_by_username)
+                values (?#{#data.customerName()}, ?#{#data.entryStartTime()},
+                                    ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
             """)
     void createInterruption(
             @Param("auth") Authentication auth, @Param("data") @RequestBody Interruption.CreateData data);
@@ -71,8 +72,9 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("createAssignment")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry_assignments (timetable_entry_id, user_username, notes, created_by_username)
-                values (?#{#data.entryId()}, ?#{#data.username()}, ?#{#data.notes()}, ?#{#auth.name});
+            insert into timetable_entry_assignments (timetable_entry_customer_name, timetable_entry_start_time, user_username, notes, created_by_username)
+                values (?#{#data.customerName()}, ?#{#data.entryStartTime()},
+                                    ?#{#data.username()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void createAssignment(@Param("auth") Authentication auth, @Param("data") @RequestBody Assignment.CreateData data);
 }

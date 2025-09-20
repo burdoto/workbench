@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Data
 @Embeddable
@@ -24,14 +24,23 @@ public class Assignment {
         return new Assignment().setUser(user).setNotes(notes);
     }
 
-    @ManyToOne User   user;
-    @Nullable  String notes;
-    @ManyToOne User createdBy;
+    @ManyToOne User          user;
+    @Nullable  LocalDateTime startTime;
+    @Nullable  LocalDateTime endTime;
+    @Nullable  String        notes;
+    @ManyToOne User          createdBy;
 
     @Override
     public String toString() {
         return user.getDisplayName();
     }
 
-    public record CreateData(@NotNull UUID entryId, @NotNull String username, @Nullable String notes) {}
+    public record CreateData(
+            @NotNull String customerName,
+            @NotNull LocalDateTime entryStartTime,
+            @NotNull String username,
+            @Nullable LocalDateTime startTime,
+            @Nullable LocalDateTime endTime,
+            @Nullable String notes
+    ) {}
 }
