@@ -7,10 +7,13 @@ import org.mariadb.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
@@ -20,10 +23,10 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 @Log
-@SpringBootApplication
 @ImportResource({ "classpath:beans.xml" })
-@EnableJpaRepositories(basePackages = "de.kaleidox.workbench.repo")
 @EntityScan(basePackages = "de.kaleidox.workbench.model.jpa")
+@EnableJpaRepositories(basePackages = "de.kaleidox.workbench.repo")
+@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 public class WorkbenchApplication {
     public static void main(String[] args) {
         SpringApplication.run(WorkbenchApplication.class, args);
@@ -49,6 +52,8 @@ public class WorkbenchApplication {
     }
 
     @Bean
+    @Order
+    @ConditionalOnMissingBean(DataSource.class)
     public DataSource dataSource(@Autowired AppConfig config) {
         var db = config.database();
         return DataSourceBuilder.create()

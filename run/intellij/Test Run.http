@@ -1,3 +1,13 @@
+POST http://localhost:8080/api/users
+Content-Type: application/json
+Authorization: Basic ZGV2Og==
+
+{
+  "username": "Brother Jim"
+}
+
+###
+
 POST http://localhost:8080/api/customers
 Content-Type: application/json
 Authorization: Basic ZGV2Og==
@@ -38,6 +48,24 @@ Authorization: Basic ZGV2Og==
   },
   "username": "dev",
   "notes": "useless wie immer"
+}
+
+###
+
+POST http://localhost:8080/api/timetableEntries/createAssignment
+Content-Type: application/json
+Authorization: Basic ZGV2Og==
+
+{
+  "entryInfo": {
+    "customerInfo": {
+      "name": "Lord Faarquardt",
+      "department": "Private House"
+    },
+    "startTime": "2025-09-05T14:34:56"
+  },
+  "username": "Brother Jim",
+  "notes": "hat für den bauherren gebetet"
 }
 
 ###
