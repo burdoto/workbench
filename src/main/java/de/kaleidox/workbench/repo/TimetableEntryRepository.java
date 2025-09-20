@@ -49,8 +49,8 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("create")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry (customer_name, start_time, end_time, notes, created_by_username)
-                values (?#{#data.customerName()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
+            insert into timetable_entry (customer_name, customer_department, start_time, end_time, notes, created_by_username)
+                values (?#{#data.customerInfo().name()}, ?#{#data.customerInfo().department()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void create(
             @Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
@@ -60,8 +60,9 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("createInterruption")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_start_time, time, duration, created_by_username)
-                values (?#{#data.customerName()}, ?#{#data.entryStartTime()},
+            insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
+                        time, duration, created_by_username)
+                values (?#{#data.entryInfo().customerInfo().name()}, ?#{#data.entryInfo().customerInfo().department()}, ?#{#data.entryInfo().startTime()},
                                     ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
             """)
     void createInterruption(
@@ -72,9 +73,10 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("createAssignment")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry_assignments (timetable_entry_customer_name, timetable_entry_start_time, user_username, notes, created_by_username)
-                values (?#{#data.customerName()}, ?#{#data.entryStartTime()},
-                                    ?#{#data.username()}, ?#{#data.notes()}, ?#{#auth.name});
+            insert into timetable_entry_assignments(timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
+                        user_username, start_time, end_time, notes, created_by_username)
+                values (?#{#data.entryInfo().customerInfo().name()}, ?#{#data.entryInfo().customerInfo().department()}, ?#{#data.entryInfo().startTime()},
+                                    ?#{#data.username()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void createAssignment(@Param("auth") Authentication auth, @Param("data") @RequestBody Assignment.CreateData data);
 }

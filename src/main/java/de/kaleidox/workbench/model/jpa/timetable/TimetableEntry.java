@@ -75,8 +75,10 @@ public class TimetableEntry {
             @ManyToOne Customer customer, LocalDateTime startTime
     ) {}
 
+    public record Info(Customer.CompositeKey customerInfo, LocalDateTime startTime) {}
+
     public record CreateData(
-            @NotNull String customerName,
+            @NotNull Customer.CompositeKey customerInfo,
             @NotNull LocalDateTime startTime,
             @NotNull LocalDateTime endTime,
             @Nullable String notes

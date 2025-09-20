@@ -36,8 +36,7 @@ public class Interruption {
     }
 
     public record CreateData(
-            @NotNull String customerName,
-            @NotNull LocalDateTime entryStartTime,
+            @NotNull TimetableEntry.Info entryInfo,
             @NotNull LocalDateTime time,
             @NotNull Duration duration
     ) {}

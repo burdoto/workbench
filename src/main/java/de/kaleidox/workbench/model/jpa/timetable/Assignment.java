@@ -36,8 +36,7 @@ public class Assignment {
     }
 
     public record CreateData(
-            @NotNull String customerName,
-            @NotNull LocalDateTime entryStartTime,
+            @NotNull TimetableEntry.Info entryInfo,
             @NotNull String username,
             @Nullable LocalDateTime startTime,
             @Nullable LocalDateTime endTime,
