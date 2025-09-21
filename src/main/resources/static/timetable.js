@@ -14,6 +14,31 @@ function init() {
     for (let input of $('.input-datetime')) {
         input.value = toLocalISOString(date)
     }
+
+    populateCustomerNames()
+    populateDepartmentNames()
+}
+
+function populateCustomerNames() {
+    populateSelection($('#input-customerName')[0], '/api/customers/names')
+}
+
+function populateDepartmentNames() {
+    let customer = $('#input-customerName')[0].value
+    if (customer === undefined || customer === '') return
+    populateSelection($('#input-departmentName')[0], '/api/customers/' + customer + '/departments')
+}
+
+async function populateSelection(selectTag, optionsUrl) {
+    selectTag.innerHTML = ''
+
+    let elements = await fetch(optionsUrl).then(response => response.json())
+    for (let element of elements) {
+        let option = document.createElement('option')
+        option.innerText = element
+        option.value = element
+        selectTag.appendChild(option)
+    }
 }
 
 function toLocalISOString(date) {
@@ -29,11 +54,8 @@ function submitCreateEntry() {
     var data = $('form').serializeArray()
 
     fetch({
-        method: 'POST',
-        url: 'api/timetableEntries/create',
-        headers: {
+        method: 'POST', url: 'api/timetableEntries/create', headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        }, body: JSON.stringify(data)
     })
 }

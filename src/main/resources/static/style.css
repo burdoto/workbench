@@ -175,9 +175,15 @@ body {
 }
 
 .ui-panel-2 {
-    border: 2.5px groove grey;
+    border: 3px groove grey;
     padding: 0 10px 10px;
     margin-bottom: 7px;
+}
+
+.ui-panel-3 {
+    border: 1.5px groove lightgrey;
+    padding: 0 5px 5px;
+    margin-bottom: 5px;
 }
 
 /* utility components */
