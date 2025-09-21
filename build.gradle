@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'de.kaleidox'
-version = '0.0.1-SNAPSHOT'
+version = '0'
 description = 'workbench'
 
 java {
