@@ -164,26 +164,30 @@ body {
     background-color: var(--button-hover-background-color);
 }
 
+.ui-select-big {
+    width: 30%;
+}
+
 .minor {
     font-size: 90%;
 }
 
 .ui-panel-1 {
-    border: 5px groove #1c1c1c;
-    padding: 0 15px 15px;
-    margin-bottom: 10px;
+    border: 5px groove #aaa;
+    padding: 15px;
+    margin: 7px 0;
 }
 
 .ui-panel-2 {
-    border: 3px groove grey;
-    padding: 0 10px 10px;
-    margin-bottom: 7px;
+    border: 3px groove #bbb;
+    padding: 10px;
+    margin: 5px 0;
 }
 
 .ui-panel-3 {
-    border: 1.5px groove lightgrey;
-    padding: 0 5px 5px;
-    margin-bottom: 5px;
+    border: 1.5px groove #ccc;
+    padding: 5px;
+    margin: 3px 0;
 }
 
 /* utility components */

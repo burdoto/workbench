@@ -6,10 +6,14 @@
 <div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
 <form class="ui-panel-1">
     <div class="ui-panel-2">
-        <label for="input-customerName">Kunde</label>
-        <select id="input-customerName" name="customerName" onchange="populateDepartmentNames()" required size="8"></select>
-        <label for="input-departmentName">Abteilung</label>
-        <select id="input-departmentName" name="departmentName" required size="8"></select>
+        <label for="input-customerName">Kunde</label> & <label for="input-departmentName">Abteilung</label>
+        <br/>
+        <select class="ui-select-big" id="input-customerName" name="customerName" onchange="populateDepartmentNames()" required size="8">
+            <option>- wird geladen -</option>
+        </select>
+        <select class="ui-select-big" id="input-departmentName" name="departmentName" required size="8">
+            <option>- bitte Kunde wählen -</option>
+        </select>
     </div>
     <div class="ui-panel-2">
         <label for="input-startTime">Anfang</label>
@@ -21,7 +25,8 @@
     </div>
     <div class="ui-panel-2">
         <label for="input-notes">Beschreibung</label>
-        <input id="input-notes" name="notes" type="text">
+        <br/>
+        <textarea cols="80" id="input-notes" name="notes" rows="5"></textarea>
     </div>
     <input onclick="submitCreateEntry()" type="submit">
 </form>
