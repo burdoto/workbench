@@ -4,7 +4,7 @@
 <script th:src="@{/static/timetable.js}" type="text/javascript"></script>
 <body onload="init()">
 <div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
-<div class="ui-panel-1">
+<form class="ui-panel-1">
     <div class="ui-panel-2">
         <label for="input-customerName">Kunde</label> & <label for="input-departmentName">Abteilung</label>
         <br/>
@@ -29,7 +29,7 @@
         <textarea cols="80" id="input-notes" name="notes" rows="5"></textarea>
     </div>
     <input onclick="submitCreateEntry()" type="submit">
-</div>
+</form>
 <div class="ui-footer" th:insert="~{/layout/footer}"></div>
 </body>
 </html>

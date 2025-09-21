@@ -20,13 +20,13 @@ function init() {
 }
 
 function populateCustomerNames() {
-    populateSelection($('#input-customerName')[0], '/api/customers/names')
+    populateSelection($('#input-customerName')[0], `${window.location.origin}/api/customers/names`)
 }
 
 function populateDepartmentNames() {
     let customer = $('#input-customerName')[0].value
     if (customer === undefined || customer === '') return
-    populateSelection($('#input-departmentName')[0], '/api/customers/' + customer + '/departments')
+    populateSelection($('#input-departmentName')[0], `${window.location.origin}/api/customers/${customer}/departments`)
 }
 
 async function populateSelection(selectTag, optionsUrl) {
@@ -51,11 +51,27 @@ function toLocalISOString(date) {
 }
 
 function submitCreateEntry() {
-    var data = $('form').serializeArray()
+    let data = {
+        'customerInfo': {
+            'name': $('#input-customerName')[0].value,
+            'department': $('#input-departmentName')[0].value
+        },
+        'startTime': $('#input-startTime')[0].value,
+        'endTime': $('#input-endTime')[0].value,
+        'notes': $('#input-notes')[0].value
+    }
 
-    fetch({
-        method: 'POST', url: 'api/timetableEntries/create', headers: {
+    fetch(`${window.location.origin}/api/timetableEntries/create`, {
+        method: 'POST',
+        headers: {
             'Content-Type': 'application/json'
-        }, body: JSON.stringify(data)
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        if (Math.floor(response.status / 100) === 2) {
+            window.location.href = `${window.location.origin}/timetable/${data.customerInfo.name}/${data.customerInfo.department}/${data.startTime}`
+            return
+        }
+        response.text().then(alert)
     })
 }

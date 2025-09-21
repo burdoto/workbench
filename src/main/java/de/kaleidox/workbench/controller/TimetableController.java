@@ -1,16 +1,19 @@
 package de.kaleidox.workbench.controller;
 
+import de.kaleidox.workbench.model.jpa.representant.Customer;
 import de.kaleidox.workbench.model.jpa.timetable.TimetableEntry;
 import de.kaleidox.workbench.repo.CustomerRepository;
 import de.kaleidox.workbench.repo.TimetableEntryRepository;
 import de.kaleidox.workbench.repo.UserRepository;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -66,5 +69,21 @@ public class TimetableController {
     @GetMapping("/create")
     public String create() {
         return "timetable/create_entry";
+    }
+
+    @GetMapping("/{customerName}/{departmentName}/{startTime}")
+    public String view(
+            Model model, @PathVariable @Param("customerName") String customerName,
+            @PathVariable @Param("departmentName") String departmentName,
+            @PathVariable @Param("startTime") LocalDateTime startTime
+    ) {
+        var cKey     = new Customer.CompositeKey(customerName, departmentName);
+        var customer = customers.findById(cKey).orElseThrow();
+
+        var eKey  = new TimetableEntry.CompositeKey(customer, startTime);
+        var entry = entries.findById(eKey).orElseThrow();
+
+        model.addAttribute("entry", entry);
+        return "timetable/view_entry";
     }
 }

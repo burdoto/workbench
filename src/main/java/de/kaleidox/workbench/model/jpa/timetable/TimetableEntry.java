@@ -38,6 +38,11 @@ public class TimetableEntry {
     @ElementCollection  Collection<Assignment>   assignments    = new ArrayList<>();
 
     @JsonIgnore
+    public String getViewUrlPath() {
+        return "";
+    }
+
+    @JsonIgnore
     public String getDayText() {
         return startTime.format(DATE_FORMATTER);
     }
