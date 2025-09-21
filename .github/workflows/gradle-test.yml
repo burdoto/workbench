@@ -27,7 +27,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests
-        run: ./gradlew test --stacktrace
+        run: ./gradlew :test --stacktrace
 
       # Upload the test reports as artifacts
       - name: Upload test reports
