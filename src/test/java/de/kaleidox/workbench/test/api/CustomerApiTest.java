@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,15 +19,39 @@ public class CustomerApiTest {
     public static final Customer FAARQUARDT_CASTLE = new Customer(FAARQUARDT_NAME, "Castle");
     public static final Customer FAARQUARDT_HOUSE  = new Customer(FAARQUARDT_NAME, "House");
 
-    @Autowired
-    private CustomerRepository customers;
-    @Autowired
-    private TestRestTemplate   rest;
+    @Autowired private CustomerRepository customers;
+    @Autowired private TestRestTemplate   rest;
 
     @Test
     @Order(0)
     void contextLoads() {
         assertNotNull(customers);
+    }
+
+    @Test
+    @Order(1)
+    void fetchNames() {
+        var response = rest.getForEntity("http://localhost:8080/api/customers/names", String[].class);
+        assertTrue(response.getStatusCode().is2xxSuccessful(), "request unsuccessful");
+
+        var data = response.getBody();
+        assertNotNull(data);
+        assertEquals(1, data.length, "wrong array length");
+        assertEquals(FAARQUARDT_NAME, data[0], "customer name mismatch");
+    }
+
+    @Test
+    @Order(2)
+    void fetchDepartments() {
+        var response = rest.getForEntity("http://localhost:8080/api/customers/%s/departments".formatted(FAARQUARDT_NAME),
+                String[].class);
+        assertTrue(response.getStatusCode().is2xxSuccessful(), "request unsuccessful");
+
+        var data = response.getBody();
+        assertNotNull(data);
+        assertEquals(2, data.length, "wrong array length");
+        assertNotEquals(-1, Arrays.binarySearch(data, "Castle"), "department not found");
+        assertNotEquals(-1, Arrays.binarySearch(data, "House"), "department not found");
     }
 
     @Test
