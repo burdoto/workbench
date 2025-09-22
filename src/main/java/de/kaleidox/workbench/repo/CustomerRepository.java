@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,18 @@ public interface CustomerRepository extends CrudRepository<Customer, String> {
         var customer   = findById(customerName).orElseThrow();
 
         customer.getDepartments().add(department);
+    }
+
+    @ResponseBody
+    @Transactional
+    @DeleteMapping("/{customerName}/departments")
+    default void removeDepartment(
+            @PathVariable("customerName") String customerName,
+            @RequestBody String departmentName
+    ) {
+        var department = bean(DepartmentRepository.class).getOrCreate(departmentName);
+        var customer   = findById(customerName).orElseThrow();
+
+        customer.getDepartments().remove(department);
     }
 }

@@ -18,6 +18,16 @@ function createDepartment(customer) {
     }).then(handleResponse)
 }
 
+function removeDepartment(customer, department) {
+    if (!confirm(`Abteilung ${department} von ${customer} entfernen?`)) return
+
+    fetch(`/api/customers/${customer}/departments`, {
+        method: 'DELETE', headers: {
+            'Content-Type': 'application/json'
+        }, body: department
+    }).then(handleResponse)
+}
+
 function handleResponse(response) {
     if (response.ok) window.location.reload()
     else alert('Interner Fehler')

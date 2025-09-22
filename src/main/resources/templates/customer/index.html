@@ -20,7 +20,9 @@
             <td>
                 <div class="ui-button" th:attr="onclick=|createDepartment('${entry.key}')|">Neu...</div>
                 <ul>
-                    <li th:each="department: ${entry.value}" th:text="${department}"></li>
+                    <li th:each="department: ${entry.value}"><span th:text="${department}"></span>
+                        <span style="font-size: 80%; color: red" th:attr="onclick=|removeDepartment('${entry.key}', '${department}')|">Entfernen</span>
+                    </li>
                 </ul>
             </td>
         </tr>
