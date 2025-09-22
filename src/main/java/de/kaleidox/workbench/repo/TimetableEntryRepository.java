@@ -22,7 +22,7 @@ import java.util.Collection;
 @Repository
 @RequestMapping("/api/timetableEntries")
 public interface TimetableEntryRepository extends CrudRepository<TimetableEntry, TimetableEntry.CompositeKey> {
-    Collection<TimetableEntry> findByCustomerNameOrderByStartTimeAsc(String customerName);
+    //Collection<TimetableEntry> findByCustomerNameOrderByStartTimeAsc(String customerName);
 
     // todo why wont this fucking work and not show up creator's but unassigned entried??
     @Query("""

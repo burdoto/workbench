@@ -1,8 +1,8 @@
 package de.kaleidox.workbench.controller;
 
-import de.kaleidox.workbench.model.jpa.representant.Customer;
 import de.kaleidox.workbench.model.jpa.timetable.TimetableEntry;
 import de.kaleidox.workbench.repo.CustomerRepository;
+import de.kaleidox.workbench.repo.DepartmentRepository;
 import de.kaleidox.workbench.repo.TimetableEntryRepository;
 import de.kaleidox.workbench.repo.UserRepository;
 import org.jetbrains.annotations.Nullable;
@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Controller
 @RequestMapping("/timetable")
 public class TimetableController {
     @Autowired UserRepository           users;
-    @Autowired CustomerRepository customers;
+    @Autowired CustomerRepository   customers;
+    @Autowired DepartmentRepository departments;
     @Autowired TimetableEntryRepository entries;
 
     @ModelAttribute("users")
@@ -54,7 +56,8 @@ public class TimetableController {
             display         = entries.findWeekByUser(user.getUsername(), year, week);
         } else if (customer != null) {
             displayInfoText = "Kunde: %s".formatted(customer);
-            display         = entries.findByCustomerNameOrderByStartTimeAsc(customer);
+            //display         = entries.findByCustomerNameOrderByStartTimeAsc(customer);
+            display = List.of();
         } else {
             displayInfoText = "Aktuelle Kalenderwoche";
             display         = entries.findThisWeekByUser(user.getUsername());
@@ -77,10 +80,10 @@ public class TimetableController {
             @PathVariable @Param("departmentName") String departmentName,
             @PathVariable @Param("startTime") LocalDateTime startTime
     ) {
-        var cKey     = new Customer.CompositeKey(customerName, departmentName);
-        var customer = customers.findById(cKey).orElseThrow();
+        var customer   = customers.findById(customerName).orElseThrow();
+        var department = customer.findDepartment(departmentName).orElseGet(() -> departments.createDefault(customer));
 
-        var eKey  = new TimetableEntry.CompositeKey(customer, startTime);
+        var eKey = new TimetableEntry.CompositeKey(department, startTime);
         var entry = entries.findById(eKey).orElseThrow();
 
         model.addAttribute("entry", entry);

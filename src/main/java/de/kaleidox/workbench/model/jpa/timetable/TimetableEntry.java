@@ -1,7 +1,7 @@
 package de.kaleidox.workbench.model.jpa.timetable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.kaleidox.workbench.model.jpa.representant.Customer;
+import de.kaleidox.workbench.model.jpa.representant.Department;
 import de.kaleidox.workbench.model.jpa.representant.User;
 import jakarta.persistence.Basic;
 import jakarta.persistence.ElementCollection;
@@ -25,11 +25,11 @@ import static java.time.format.DateTimeFormatter.*;
 @Data
 @Entity
 @IdClass(TimetableEntry.CompositeKey.class)
-@EqualsAndHashCode(of = { "customer", "startTime" })
+@EqualsAndHashCode(of = { "customerDepartment", "startTime" })
 public class TimetableEntry {
     public static final DateTimeFormatter DATE_FORMATTER = ofPattern("EE dd.MM.yy");
     public static final DateTimeFormatter HOUR_FORMATTER = ofPattern("HH:mm");
-    @Id @ManyToOne      Customer          customer;
+    @Id @ManyToOne      Department        customerDepartment;
     @Id @Basic          LocalDateTime     startTime;
     @Basic              LocalDateTime            endTime;
     @Nullable           String                   notes;
@@ -77,13 +77,13 @@ public class TimetableEntry {
 
     @Embeddable
     public record CompositeKey(
-            @ManyToOne Customer customer, LocalDateTime startTime
+            @ManyToOne Department customerDepartment, LocalDateTime startTime
     ) {}
 
-    public record Info(Customer.CompositeKey customerInfo, LocalDateTime startTime) {}
+    public record Info(Department customerDepartment, LocalDateTime startTime) {}
 
     public record CreateData(
-            @NotNull Customer.CompositeKey customerInfo,
+            @NotNull Department customerDepartment,
             @NotNull LocalDateTime startTime,
             @NotNull LocalDateTime endTime,
             @Nullable String notes
