@@ -82,7 +82,7 @@ public class TimetableController {
         var department = customer.findDepartment(departmentName)
                 .orElseGet(() -> departments.getOrCreateDefault(customer));
 
-        var eKey = new TimetableEntry.CompositeKey(department, startTime);
+        var eKey = new TimetableEntry.CompositeKey(customer, department, startTime);
         var entry = entries.findById(eKey).orElseThrow();
 
         model.addAttribute("entry", entry);

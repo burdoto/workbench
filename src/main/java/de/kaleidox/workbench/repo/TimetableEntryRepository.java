@@ -45,8 +45,8 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
 
     @Query("""
             select timetable_entry from TimetableEntry timetable_entry
-                where timetable_entry.customerDepartment.customer.name = :customerName
-                  and (:departmentName is null or timetable_entry.customerDepartment.name = :departmentName)
+                where timetable_entry.customer.name = :customerName
+                  and (:departmentName is null or timetable_entry.department.name = :departmentName)
                 order by timetable_entry.startTime asc
             """)
     Collection<TimetableEntry> findCustomer(@NotNull String customerName, @Nullable String departmentName);
@@ -57,7 +57,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @PostMapping("create")
     @Query(nativeQuery = true, value = """
             insert into timetable_entry (customer_name, customer_department, start_time, end_time, notes, created_by_username)
-                values (?#{#data.customerDepartment().customer.name}, ?#{#data.customerDepartment().name},
+                values (?#{#data.customerName()}, ?#{#data.departmentName()},
                                     ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void create(
@@ -70,8 +70,8 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Query(nativeQuery = true, value = """
             insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
                         time, duration, created_by_username)
-                values (?#{#data.entryInfo().customerDepartment().customer.name},
-                                    ?#{#data.entryInfo().customerDepartment().name},
+                values (?#{#data.entryInfo().customerName()},
+                                    ?#{#data.entryInfo().departmentName()},
                                     ?#{#data.entryInfo().startTime()},
                                     ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
             """)
@@ -85,8 +85,8 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Query(nativeQuery = true, value = """
             insert into timetable_entry_assignments(timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
                         user_username, start_time, end_time, notes, created_by_username)
-                values (?#{#data.entryInfo().customerDepartment().customer.name},
-                                    ?#{#data.entryInfo().customerDepartment().name},
+                values (?#{#data.entryInfo().customerName()},
+                                    ?#{#data.entryInfo().departmentName()},
                                     ?#{#data.entryInfo().startTime()},
                                     ?#{#data.username()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()},
                                     ?#{#auth.name});

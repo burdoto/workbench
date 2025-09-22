@@ -9,7 +9,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,19 +16,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Repository
-@RequestMapping("/api/customers/{customerName}/departments")
+@RequestMapping("/api/departments")
 public interface DepartmentRepository extends CrudRepository<Department, String> {
+    default Department getOrCreate(String name) {
+        return findById(name).orElseGet(() -> save(new Department(name)));
+    }
+
     @Modifying
     @ResponseBody
     @Transactional
     @PostMapping("create")
-    @Query(nativeQuery = true, value = "insert into department (name,customer_name) values (:name, :customerName);")
-    void create(
-            @Param("customerName") @PathVariable("customerName") String customerName,
-            @Param("name") @RequestBody String name
-    );
+    @Query(nativeQuery = true, value = "insert into department (name) values (:name);")
+    void create(@Param("name") @RequestBody String name);
 
     default Department getOrCreateDefault(Customer customer) {
-        return customer.findDepartment("").orElseGet(() -> save(new Department("", customer)));
+        return customer.findDepartment("").orElseGet(() -> {
+            var department = new Department("");
+            var persistent = save(department);
+            customer.getDepartments().add(persistent);
+            return persistent;
+        });
     }
 }

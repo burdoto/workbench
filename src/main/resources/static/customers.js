@@ -11,7 +11,7 @@ function createCustomer() {
 function createDepartment(customer) {
     let department = prompt('Abteilungsname:', '')
 
-    fetch(`/api/customers/${customer}/create`, {
+    fetch(`/api/customers/${customer}/departments`, {
         method: 'POST', headers: {
             'Content-Type': 'application/json'
         }, body: department
@@ -20,5 +20,5 @@ function createDepartment(customer) {
 
 function handleResponse(response) {
     if (response.ok) window.location.reload()
-    alert('Interner Fehler')
+    else alert('Interner Fehler')
 }

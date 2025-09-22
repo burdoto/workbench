@@ -52,10 +52,8 @@ function toLocalISOString(date) {
 
 function submitCreateEntry() {
     let data = {
-        'customerInfo': {
-            'name': $('#input-customerName')[0].value,
-            'department': $('#input-departmentName')[0].value
-        },
+        'customerName': $('#input-customerName')[0].value,
+        'departmentName': $('#input-departmentName')[0].value,
         'startTime': $('#input-startTime')[0].value,
         'endTime': $('#input-endTime')[0].value,
         'notes': $('#input-notes')[0].value

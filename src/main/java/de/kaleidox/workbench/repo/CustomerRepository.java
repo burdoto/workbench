@@ -17,19 +17,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
 
+import static de.kaleidox.workbench.util.ApplicationContextProvider.*;
+
 @Controller
 @Repository
 @RequestMapping("/api/customers")
 public interface CustomerRepository extends CrudRepository<Customer, String> {
     @ResponseBody
     @GetMapping("/names")
-    @Query("select distinct c.name from Customer c")
+    @Query("select c.name from Customer c")
     Collection<String> names();
 
     @ResponseBody
-    @GetMapping("/{name}/departments")
-    @Query("select d from  Department d where d.customer.name= :name")
-    Collection<String> departments(@PathVariable @Param("name") String name);
+    @GetMapping("/{customerName}/departments")
+    @Query("select d.name from Customer c right join c.departments d where c.name = :customerName")
+    Collection<String> departments(@PathVariable("customerName") @Param("customerName") String customerName);
 
     @Modifying
     @ResponseBody
@@ -37,4 +39,14 @@ public interface CustomerRepository extends CrudRepository<Customer, String> {
     @PostMapping("create")
     @Query(nativeQuery = true, value = "insert into customer (name) values (:name);")
     void create(@Param("name") @RequestBody String name);
+
+    @ResponseBody
+    @Transactional
+    @PostMapping("/{customerName}/departments")
+    default void addDepartment(@PathVariable("customerName") String customerName, @RequestBody String departmentName) {
+        var department = bean(DepartmentRepository.class).getOrCreate(departmentName);
+        var customer   = findById(customerName).orElseThrow();
+
+        customer.getDepartments().add(department);
+    }
 }
