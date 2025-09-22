@@ -36,8 +36,8 @@
             <th>Abteilung</th>
             <th>Begonnen</th>
             <th>Beendet</th>
-            <th>Unterbrechungen</th>
             <th>Bemerkungen</th>
+            <th>Unterbrechungen</th>
             <th>Zuweisungen</th>
         </tr>
         </thead>
@@ -49,8 +49,8 @@
             <td th:text="${entry.department.name}"></td>
             <td th:text="${entry.startTimeText}"></td>
             <td th:text="${entry.endTimeText}"></td>
-            <td th:text="${entry.breaksSummaryText}"></td>
             <td th:text="${entry.notes}"></td>
+            <td th:text="${entry.breaksSummaryText}"></td>
             <td th:text="${entry.assignmentsSummaryText}"></td>
         </tr>
         </tbody>
