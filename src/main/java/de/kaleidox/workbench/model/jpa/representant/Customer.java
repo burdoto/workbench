@@ -2,7 +2,7 @@ package de.kaleidox.workbench.model.jpa.representant;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,8 +17,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "name")
 public class Customer {
-    @Id        String                 name;
-    @OneToMany Collection<Department> departments;
+    @Id         String                 name;
+    @ManyToMany Collection<Department> departments;
 
     public Optional<Department> findDepartment(String name) {
         return departments.stream().filter(department -> department.getName().equals(name)).findAny();
