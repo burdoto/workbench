@@ -1,22 +1,24 @@
 function createCustomer() {
     let customer = prompt('Kundenname:')
-    createDepartment(customer)
+
+    fetch('/api/customers/create', {
+        method: 'POST', headers: {
+            'Content-Type': 'application/json'
+        }, body: customer
+    }).then(handleResponse)
 }
 
 function createDepartment(customer) {
     let department = prompt('Abteilungsname:', '')
 
-    fetch('/api/customers/create', {
-        method: 'POST',
-        headers: {
+    fetch(`/api/customers/${customer}/create`, {
+        method: 'POST', headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: customer,
-            department: department
-        })
-    }).then(response => {
-        if (response.ok) window.location.reload()
-        alert('Interner Fehler')
-    })
+        }, body: department
+    }).then(handleResponse)
+}
+
+function handleResponse(response) {
+    if (response.ok) window.location.reload()
+    alert('Interner Fehler')
 }

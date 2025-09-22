@@ -4,6 +4,8 @@ import de.kaleidox.workbench.model.jpa.timetable.Assignment;
 import de.kaleidox.workbench.model.jpa.timetable.Interruption;
 import de.kaleidox.workbench.model.jpa.timetable.TimetableEntry;
 import jakarta.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -22,9 +24,6 @@ import java.util.Collection;
 @Repository
 @RequestMapping("/api/timetableEntries")
 public interface TimetableEntryRepository extends CrudRepository<TimetableEntry, TimetableEntry.CompositeKey> {
-    //Collection<TimetableEntry> findByCustomerNameOrderByStartTimeAsc(String customerName);
-
-    // todo why wont this fucking work and not show up creator's but unassigned entried??
     @Query("""
             select timetable_entry from TimetableEntry timetable_entry
                 left join fetch timetable_entry.assignments assignment
@@ -44,13 +43,22 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
             """)
     Collection<TimetableEntry> findWeekByUser(String username, short year, byte week);
 
+    @Query("""
+            select timetable_entry from TimetableEntry timetable_entry
+                where timetable_entry.customerDepartment.customer.name = :customerName
+                  and (:departmentName is null or timetable_entry.customerDepartment.name = :departmentName)
+                order by timetable_entry.startTime asc
+            """)
+    Collection<TimetableEntry> findCustomer(@NotNull String customerName, @Nullable String departmentName);
+
     @Modifying
     @ResponseBody
     @Transactional
     @PostMapping("create")
     @Query(nativeQuery = true, value = """
             insert into timetable_entry (customer_name, customer_department, start_time, end_time, notes, created_by_username)
-                values (?#{#data.customerInfo().name()}, ?#{#data.customerInfo().department()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
+                values (?#{#data.customerDepartment().customer.name}, ?#{#data.customerDepartment().name},
+                                    ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
     void create(
             @Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
@@ -62,7 +70,9 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Query(nativeQuery = true, value = """
             insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
                         time, duration, created_by_username)
-                values (?#{#data.entryInfo().customerInfo().name()}, ?#{#data.entryInfo().customerInfo().department()}, ?#{#data.entryInfo().startTime()},
+                values (?#{#data.entryInfo().customerDepartment().customer.name},
+                                    ?#{#data.entryInfo().customerDepartment().name},
+                                    ?#{#data.entryInfo().startTime()},
                                     ?#{#data.time()}, ?#{#data.duration()}, ?#{#auth.name});
             """)
     void createInterruption(
@@ -75,8 +85,11 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Query(nativeQuery = true, value = """
             insert into timetable_entry_assignments(timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
                         user_username, start_time, end_time, notes, created_by_username)
-                values (?#{#data.entryInfo().customerInfo().name()}, ?#{#data.entryInfo().customerInfo().department()}, ?#{#data.entryInfo().startTime()},
-                                    ?#{#data.username()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
+                values (?#{#data.entryInfo().customerDepartment().customer.name},
+                                    ?#{#data.entryInfo().customerDepartment().name},
+                                    ?#{#data.entryInfo().startTime()},
+                                    ?#{#data.username()}, ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()},
+                                    ?#{#auth.name});
             """)
     void createAssignment(@Param("auth") Authentication auth, @Param("data") @RequestBody Assignment.CreateData data);
 }

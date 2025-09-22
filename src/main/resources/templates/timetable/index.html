@@ -33,6 +33,7 @@
         <tr>
             <th>Tag</th>
             <th>Kunde</th>
+            <th>Abteilung</th>
             <th>Begonnen</th>
             <th>Beendet</th>
             <th>Unterbrechungen</th>
@@ -42,13 +43,14 @@
         </thead>
         <tbody>
         <tr th:each="entry: ${entries}">
-            <td th:text="${entry.getDayText()}"></td>
-            <td th:text="${entry.getCustomer()}"></td>
-            <td th:text="${entry.getStartTimeText()}"></td>
-            <td th:text="${entry.getEndTimeText()}"></td>
-            <td th:text="${entry.getBreaksSummaryText()}"></td>
-            <td th:text="${entry.getNotes()}"></td>
-            <td th:text="${entry.getAssignmentsSummaryText()}"></td>
+            <td th:text="${entry.dayText}"></td>
+            <td th:text="${entry.customerDepartment.customer.name}"></td>
+            <td th:text="${entry.customerDepartment.name}"></td>
+            <td th:text="${entry.startTimeText}"></td>
+            <td th:text="${entry.endTimeText}"></td>
+            <td th:text="${entry.breaksSummaryText}"></td>
+            <td th:text="${entry.notes}"></td>
+            <td th:text="${entry.assignmentsSummaryText}"></td>
         </tr>
         </tbody>
     </table>

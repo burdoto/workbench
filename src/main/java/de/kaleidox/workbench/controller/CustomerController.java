@@ -1,7 +1,7 @@
 package de.kaleidox.workbench.controller;
 
-import de.kaleidox.workbench.model.jpa.representant.Customer;
 import de.kaleidox.workbench.repo.CustomerRepository;
+import de.kaleidox.workbench.repo.DepartmentRepository;
 import de.kaleidox.workbench.repo.UserRepository;
 import org.comroid.api.func.util.Streams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
-    @Autowired UserRepository     users;
-    @Autowired CustomerRepository customers;
+    @Autowired UserRepository       users;
+    @Autowired CustomerRepository   customers;
+    @Autowired DepartmentRepository departments;
 
     @ModelAttribute("users")
     public UserRepository users() {
@@ -31,7 +32,8 @@ public class CustomerController {
 
     @GetMapping
     public String index(Model model) {
-        var tree = Streams.of(customers.findAll()).collect(Collectors.groupingBy(Customer::getName));
+        var tree = Streams.of(departments.findAll())
+                .collect(Collectors.groupingBy(dept -> dept.getCustomer().getName()));
 
         model.addAttribute("tree", tree);
 

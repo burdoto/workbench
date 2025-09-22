@@ -2,34 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/layout/head}"></head>
 <script th:src="@{/static/timetable.js}" type="text/javascript"></script>
-<body onload="init()">
+<body>
 <div class="ui-menubar" th:insert="~{/layout/menubar}"></div>
-<form class="ui-panel-1">
-    <div class="ui-panel-2">
-        <label for="input-customerName">Kunde</label> & <label for="input-departmentName">Abteilung</label>
-        <br/>
-        <select class="ui-select-big" id="input-customerName" name="customerName" onchange="populateDepartmentNames()" required size="8">
-            <option>- wird geladen -</option>
-        </select>
-        <select class="ui-select-big" id="input-departmentName" name="departmentName" required size="8">
-            <option>- bitte Kunde wählen -</option>
-        </select>
-    </div>
-    <div class="ui-panel-2">
-        <label for="input-startTime">Anfang</label>
-        <input class="input-datetime" id="input-startTime" name="startTime" required type="datetime-local" value="now">
-    </div>
-    <div class="ui-panel-2">
-        <label for="input-endTime">Ende</label>
-        <input class="input-datetime" id="input-endTime" name="endTime" required type="datetime-local" value="now">
-    </div>
-    <div class="ui-panel-2">
-        <label for="input-notes">Beschreibung</label>
-        <br/>
-        <textarea cols="80" id="input-notes" name="notes" rows="5"></textarea>
-    </div>
-    <input onclick="submitCreateEntry()" type="submit">
-</form>
+WIP
 <div class="ui-footer" th:insert="~{/layout/footer}"></div>
 </body>
 </html>

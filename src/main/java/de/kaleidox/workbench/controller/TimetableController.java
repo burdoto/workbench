@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 @Controller
 @RequestMapping("/timetable")
@@ -56,8 +55,7 @@ public class TimetableController {
             display         = entries.findWeekByUser(user.getUsername(), year, week);
         } else if (customer != null) {
             displayInfoText = "Kunde: %s".formatted(customer);
-            //display         = entries.findByCustomerNameOrderByStartTimeAsc(customer);
-            display = List.of();
+            display = entries.findCustomer(customer, null);
         } else {
             displayInfoText = "Aktuelle Kalenderwoche";
             display         = entries.findThisWeekByUser(user.getUsername());
@@ -81,7 +79,8 @@ public class TimetableController {
             @PathVariable @Param("startTime") LocalDateTime startTime
     ) {
         var customer   = customers.findById(customerName).orElseThrow();
-        var department = customer.findDepartment(departmentName).orElseGet(() -> departments.createDefault(customer));
+        var department = customer.findDepartment(departmentName)
+                .orElseGet(() -> departments.getOrCreateDefault(customer));
 
         var eKey = new TimetableEntry.CompositeKey(department, startTime);
         var entry = entries.findById(eKey).orElseThrow();
