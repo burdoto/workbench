@@ -59,6 +59,11 @@ function submitCreateEntry() {
         'notes': $('#input-notes')[0].value
     }
 
+    if (data.customerName === '' || data.departmentName === '' || data.startTime === data.endTime) {
+        alert("Bitte alle Felder ausfüllen")
+        return
+    }
+
     fetch(`${window.location.origin}/api/timetableEntries/create`, {
         method: 'POST',
         headers: {

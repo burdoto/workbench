@@ -44,8 +44,8 @@
         <tbody>
         <tr th:each="entry: ${entries}">
             <td th:text="${entry.dayText}"></td>
-            <td th:text="${entry.customerDepartment.customer.name}"></td>
-            <td th:text="${entry.customerDepartment.name}"></td>
+            <td th:text="${entry.customer.name}"></td>
+            <td th:text="${entry.department.name}"></td>
             <td th:text="${entry.startTimeText}"></td>
             <td th:text="${entry.endTimeText}"></td>
             <td th:text="${entry.breaksSummaryText}"></td>

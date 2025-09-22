@@ -56,7 +56,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("create")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry (customer_name, customer_department, start_time, end_time, notes, created_by_username)
+            insert into timetable_entry (customer_name, department_name, start_time, end_time, notes, created_by_username)
                 values (?#{#data.customerName()}, ?#{#data.departmentName()},
                                     ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
@@ -68,7 +68,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("createInterruption")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
+            insert into timetable_entry_interruptions (timetable_entry_customer_name, timetable_entry_department_name, timetable_entry_start_time,
                         time, duration, created_by_username)
                 values (?#{#data.entryInfo().customerName()},
                                     ?#{#data.entryInfo().departmentName()},
@@ -83,7 +83,7 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
     @Transactional
     @PostMapping("createAssignment")
     @Query(nativeQuery = true, value = """
-            insert into timetable_entry_assignments(timetable_entry_customer_name, timetable_entry_customer_department, timetable_entry_start_time,
+            insert into timetable_entry_assignments(timetable_entry_customer_name, timetable_entry_department_name, timetable_entry_start_time,
                         user_username, start_time, end_time, notes, created_by_username)
                 values (?#{#data.entryInfo().customerName()},
                                     ?#{#data.entryInfo().departmentName()},
