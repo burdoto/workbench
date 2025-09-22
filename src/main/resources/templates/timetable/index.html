@@ -42,7 +42,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="entry: ${entries}">
+        <tr class="ui-table-parent" th:attr="onclick=|window.location.href = window.location.origin + '/timetable/${entry.customer.name}/${entry.department.name}/${entry.startTime}'|"
+            th:each="entry: ${entries}">
             <td th:text="${entry.dayText}"></td>
             <td th:text="${entry.customer.name}"></td>
             <td th:text="${entry.department.name}"></td>

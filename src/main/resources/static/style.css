@@ -284,9 +284,6 @@ tr {
 
 tr.ui-table-parent:hover {
     cursor: pointer;
-}
-
-tr.ui-table-parent:hover {
     background-color: var(--table-header-background-color);
 }
 

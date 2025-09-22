@@ -1,5 +1,6 @@
 package de.kaleidox.workbench.model.jpa.timetable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.kaleidox.workbench.model.jpa.representant.User;
 import de.kaleidox.workbench.repo.UserRepository;
 import de.kaleidox.workbench.util.ApplicationContextProvider;
@@ -29,6 +30,16 @@ public class Assignment {
     @Nullable  LocalDateTime endTime;
     @Nullable  String        notes;
     @ManyToOne User          createdBy;
+
+    @JsonIgnore
+    public String getStartTimeText() {
+        return startTime == null ? "(selbe wie oben)" : startTime.format(TimetableEntry.HOUR_FORMATTER);
+    }
+
+    @JsonIgnore
+    public String getEndTimeText() {
+        return endTime == null ? "(selbe wie oben)" : endTime.format(TimetableEntry.HOUR_FORMATTER);
+    }
 
     @Override
     public String toString() {
