@@ -72,7 +72,7 @@ function submitCreateEntry() {
         body: JSON.stringify(data)
     }).then(response => {
         if (Math.floor(response.status / 100) === 2) {
-            window.location.href = `${window.location.origin}/timetable/${data.customerInfo.name}/${data.customerInfo.department}/${data.startTime}`
+            window.location.href = `${window.location.origin}/timetable/${data.customerName}/${data.departmentName}/${data.startTime}`
             return
         }
         response.text().then(alert)
