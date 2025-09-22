@@ -1,9 +1,9 @@
 package de.kaleidox.workbench.model.jpa.timetable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.kaleidox.workbench.model.jpa.representant.Customer;
-import de.kaleidox.workbench.model.jpa.representant.Department;
 import de.kaleidox.workbench.model.jpa.representant.User;
+import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
+import de.kaleidox.workbench.model.jpa.representant.customer.Department;
 import jakarta.persistence.Basic;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;

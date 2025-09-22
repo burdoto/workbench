@@ -1,6 +1,6 @@
 package de.kaleidox.workbench.test.api;
 
-import de.kaleidox.workbench.model.jpa.representant.Customer;
+import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
 import de.kaleidox.workbench.repo.CustomerRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

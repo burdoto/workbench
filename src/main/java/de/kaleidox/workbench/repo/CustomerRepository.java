@@ -1,6 +1,6 @@
 package de.kaleidox.workbench.repo;
 
-import de.kaleidox.workbench.model.jpa.representant.Customer;
+import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

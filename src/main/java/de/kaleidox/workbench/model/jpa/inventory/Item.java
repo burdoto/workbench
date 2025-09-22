@@ -1,7 +1,7 @@
 package de.kaleidox.workbench.model.jpa.inventory;
 
-import de.kaleidox.workbench.model.jpa.representant.ItemManufacturer;
-import de.kaleidox.workbench.model.jpa.representant.ItemSupplier;
+import de.kaleidox.workbench.model.jpa.representant.market.ItemManufacturer;
+import de.kaleidox.workbench.model.jpa.representant.market.ItemSupplier;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;

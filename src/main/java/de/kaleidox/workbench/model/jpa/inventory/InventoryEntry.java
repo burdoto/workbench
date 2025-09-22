@@ -1,6 +1,6 @@
 package de.kaleidox.workbench.model.jpa.inventory;
 
-import de.kaleidox.workbench.model.jpa.representant.Customer;
+import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;

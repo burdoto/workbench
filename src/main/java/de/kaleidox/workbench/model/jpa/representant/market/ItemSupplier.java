@@ -1,4 +1,4 @@
-package de.kaleidox.workbench.model.jpa.representant;
+package de.kaleidox.workbench.model.jpa.representant.market;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

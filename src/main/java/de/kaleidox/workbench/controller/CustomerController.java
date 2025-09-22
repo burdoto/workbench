@@ -1,6 +1,6 @@
 package de.kaleidox.workbench.controller;
 
-import de.kaleidox.workbench.model.jpa.representant.Department;
+import de.kaleidox.workbench.model.jpa.representant.customer.Department;
 import de.kaleidox.workbench.repo.CustomerRepository;
 import de.kaleidox.workbench.repo.DepartmentRepository;
 import de.kaleidox.workbench.repo.UserRepository;
