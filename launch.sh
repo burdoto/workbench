@@ -2,4 +2,4 @@
 
 ./pull.sh
 
-DEBUG=true ./gradlew bootRun
+./gradlew bootRun
