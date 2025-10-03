@@ -8,6 +8,5 @@ public record OAuth2Info(
         String redirectUrl,
         String authorizationUrl,
         String tokenUrl,
-        String userInfoUrl,
-        String userNameAttributeName
+        String userInfoUrl
 ) {}

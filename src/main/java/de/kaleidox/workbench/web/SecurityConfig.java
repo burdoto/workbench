@@ -48,7 +48,7 @@ public class SecurityConfig extends DefaultOAuth2UserService {
                         .authorizationUri(info.authorizationUrl())
                         .tokenUri(info.tokenUrl())
                         .userInfoUri(info.userInfoUrl())
-                        .userNameAttributeName(info.userNameAttributeName().replaceAll("\\.", ""))
+                        .userNameAttributeName("userid")
                         .build())
                 .toArray(ClientRegistration[]::new);
         return registrations.length == 0 ? null : new InMemoryClientRegistrationRepository(registrations);
@@ -99,18 +99,15 @@ public class SecurityConfig extends DefaultOAuth2UserService {
     @EventListener
     public void on(ApplicationStartedEvent ignored) {
         setAttributesConverter(input -> source -> {
-            var userNameAttributeName = input.getClientRegistration()
-                    .getProviderDetails()
-                    .getUserInfoEndpoint()
-                    .getUserNameAttributeName();
-            if (!userNameAttributeName.contains(".")) return source;
-
-            var userId = new SpelExpressionParser().parseRaw(userNameAttributeName)
+            var userId = new SpelExpressionParser().parseRaw("ocs.data.id")
                     .getValue(SimpleEvaluationContext.forPropertyAccessors(new MapAccessor())
                             .withRootObject(source)
                             .build());
 
-            source.put(userNameAttributeName.replaceAll("\\.", ""), userId);
+            source.put(input.getClientRegistration()
+                    .getProviderDetails()
+                    .getUserInfoEndpoint()
+                    .getUserNameAttributeName(), userId);
             return source;
         });
     }
