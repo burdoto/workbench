@@ -9,7 +9,9 @@
       "name": "",
       "clientId": "",
       "secret": "",
-      "scope": "",
+      "scope": [
+        ""
+      ],
       "redirectUrl": "",
       "authorizationUrl": "",
       "tokenUrl": "",
