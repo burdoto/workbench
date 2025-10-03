@@ -22,6 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
@@ -69,6 +70,10 @@ public class WorkbenchApplication implements WebServerFactoryCustomizer<Configur
 
     @Override
     public void customize(ConfigurableWebServerFactory factory) {
-        factory.setPort(Debug.isDebug() ? 8080 : 42032);
+        if (Debug.isDebug()) factory.setPort(8080);
+        else {
+            factory.setPort(42069);
+            factory.setAddress(InetAddress.getLoopbackAddress());
+        }
     }
 }
