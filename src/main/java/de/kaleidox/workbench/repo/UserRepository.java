@@ -17,6 +17,6 @@ public interface UserRepository extends CrudRepository<User, String> {
     default Optional<User> get(Authentication auth) {
         if (auth == null) return Debug.isDebug() ? of(save(User.DEV)) : empty();
         var username = auth.getName();
-        return findById(username).or(() -> Debug.isDebug() ? of(save(User.DEV)) : empty());
+        return findById(username).or(() -> of(save(Debug.isDebug() ? User.DEV : new User(username, username))));
     }
 }
