@@ -7,9 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.annotation.Order;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -27,7 +33,7 @@ import java.util.List;
 
 @Log
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig extends DefaultOAuth2UserService {
     @Bean
     @ConditionalOnExpression("#{!(systemEnvironment['DEBUG']?:'false').equals('true')}")
     public @Nullable ClientRegistrationRepository clientRegistrationRepository(@Autowired AppConfig config) {
@@ -54,9 +60,12 @@ public class SecurityConfig {
     public SecurityFilterChain configureSecure(HttpSecurity http) throws Exception {
         log.info("Using OAuth2-based SecurityFilterChain");
         return http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/**")
-                .fullyAuthenticated()
-                .anyRequest()
-                .authenticated()).oauth2Login(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable).build();
+                        .fullyAuthenticated()
+                        .anyRequest()
+                        .authenticated())
+                .oauth2Login(oauth -> oauth.userInfoEndpoint(info -> info.userService(this)))
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
     }
 
     @Bean
@@ -69,8 +78,6 @@ public class SecurityConfig {
                 .anyRequest()
                 .permitAll()).httpBasic(Customizer.withDefaults()).userDetailsService(username -> new UserDetails() {
             // token for dev: ZGV2Og==
-
-            {}
 
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -87,5 +94,21 @@ public class SecurityConfig {
                 return username;
             }
         }).csrf(AbstractHttpConfigurer::disable).build();
+    }
+
+    @EventListener
+    public void on(ApplicationStartedEvent ignored) {
+        setAttributesConverter(input -> source -> {
+            if (!source.containsKey("ocs")) return source;
+            var userId = new SpelExpressionParser().parseRaw("ocs.data.id")
+                    .getValue(SimpleEvaluationContext.forPropertyAccessors(new MapAccessor())
+                            .withRootObject(source)
+                            .build());
+            source.put(input.getClientRegistration()
+                    .getProviderDetails()
+                    .getUserInfoEndpoint()
+                    .getUserNameAttributeName(), userId);
+            return source;
+        });
     }
 }

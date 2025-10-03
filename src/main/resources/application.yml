@@ -17,3 +17,9 @@ spring:
       return-body-on-create: true
       return-body-on-update: true
       enable-enum-translation: true
+logging:
+  level:
+    root: info
+    de.kaleidox: debug
+    org.comroid: debug
+    com.ampznetwork: debug
