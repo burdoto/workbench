@@ -1,5 +1,7 @@
 package de.kaleidox.workbench;
 
+import com.fasterxml.jackson.core.JsonFactoryBuilder;
+import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.kaleidox.workbench.model.config.AppConfig;
 import lombok.extern.java.Log;
@@ -34,6 +36,13 @@ import java.util.Objects;
 public class WorkbenchApplication implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
     public static void main(String[] args) {
         SpringApplication.run(WorkbenchApplication.class, args);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper(new JsonFactoryBuilder() {{
+            enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION);
+        }}.build());
     }
 
     @Bean
