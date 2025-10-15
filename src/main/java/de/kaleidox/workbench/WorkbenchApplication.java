@@ -3,6 +3,8 @@ package de.kaleidox.workbench;
 import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.kaleidox.workbench.model.config.AppConfig;
 import lombok.extern.java.Log;
 import org.comroid.api.func.util.Debug;
@@ -40,9 +42,11 @@ public class WorkbenchApplication implements WebServerFactoryCustomizer<Configur
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper(new JsonFactoryBuilder() {{
+        var mapper = new ObjectMapper(new JsonFactoryBuilder() {{
             enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION);
         }}.build());
+        mapper.registerModule(new JavaTimeModule());
+        return mapper;
     }
 
     @Bean
