@@ -15,8 +15,7 @@
       "redirectUrl": "",
       "authorizationUrl": "",
       "tokenUrl": "",
-      "userInfoUrl": "",
-      "userNameAttributeName": ""
+      "userInfoUrl": ""
     }
   ]
-}
+}yd
