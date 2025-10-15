@@ -1,6 +1,7 @@
 package de.kaleidox.workbench.model.jpa.timetable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.kaleidox.workbench.model.entry.Timeframe;
 import de.kaleidox.workbench.model.jpa.representant.User;
 import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
 import de.kaleidox.workbench.model.jpa.representant.customer.Department;
@@ -27,7 +28,7 @@ import static java.time.format.DateTimeFormatter.*;
 @Entity
 @IdClass(TimetableEntry.CompositeKey.class)
 @EqualsAndHashCode(of = { "customer", "department", "startTime" })
-public class TimetableEntry {
+public class TimetableEntry implements Timeframe {
     public static final DateTimeFormatter DATE_FORMATTER = ofPattern("EE dd.MM.yy");
     public static final DateTimeFormatter HOUR_FORMATTER = ofPattern("HH:mm");
     @Id @ManyToOne      Customer          customer;
@@ -90,5 +91,9 @@ public class TimetableEntry {
             @NotNull LocalDateTime startTime,
             @NotNull LocalDateTime endTime,
             @Nullable String notes
-    ) {}
+    ) {
+        public CreateData {
+            Timeframe.validateTimeframe(startTime, endTime);
+        }
+    }
 }
