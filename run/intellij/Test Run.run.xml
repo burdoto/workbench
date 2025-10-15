@@ -5,9 +5,10 @@
     </envs>
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="workbench.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="de.kaleidox.workbench.WorkbenchApplication"/>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="de.kaleidox.workbench.WorkbenchApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Background Services" run_configuration_type="docker-deploy" />
     </method>
   </configuration>
 </component>
