@@ -1,5 +1,6 @@
 function createCustomer() {
     let customer = prompt('Kundenname:')
+    if (!isNameSane(customer)) return;
 
     fetch('/api/customers/create', {
         method: 'POST', headers: {
@@ -10,6 +11,7 @@ function createCustomer() {
 
 function createDepartment(customer) {
     let department = prompt('Abteilungsname:', '')
+    if (!isNameSane(department)) return;
 
     fetch(`/api/customers/${customer}/departments`, {
         method: 'POST', headers: {
@@ -28,7 +30,6 @@ function removeDepartment(customer, department) {
     }).then(handleResponse)
 }
 
-function handleResponse(response) {
-    if (response.ok) window.location.reload()
-    else alert('Interner Fehler')
+async function handleResponse(response) {
+    if (response.ok) window.location.reload(); else alert('Interner Fehler:\n' + await response.text())
 }

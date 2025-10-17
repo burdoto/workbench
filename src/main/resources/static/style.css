@@ -251,8 +251,12 @@ h1, h2 {
     text-decoration: underline 0.05rem;
 }
 
-h3, h4, h5, h6 {
+h3, h4, h5 {
     text-decoration: underline 0.02rem;
+}
+
+h6 {
+    text-decoration: none;
 }
 
 a {
@@ -421,11 +425,6 @@ td .state-switch {
     background: #AAA; /* linear-gradient(304deg, rgba(228, 228, 228, 1) 14%, rgba(126, 126, 126, 1) 41%, rgba(94, 94, 94, 1) 61%, rgba(172, 172, 172, 1) 85%, rgba(208, 208, 208, 1) 100%);*/
     backdrop-filter: blur(3px);
 }
-
-
-
-
-
 
 
 /* icons */
@@ -616,10 +615,6 @@ td .state-switch {
     }
     /* end position */
 }
-
-
-
-
 
 
 /* old stuff */

@@ -3,7 +3,7 @@ function parameterValue(name) {
     if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search)) return decodeURIComponent(name[1]);
 }
 
-function init() {
+async function init() {
     for (let filter of $('.filter')) {
         let name = filter.id.substring(7)
         let value = parameterValue(name);
@@ -17,16 +17,33 @@ function init() {
 
     populateCustomerNames()
     populateDepartmentNames()
+    populateUserNames()
 }
 
-function populateCustomerNames() {
-    populateSelection($('#input-customerName')[0], `${window.location.origin}/api/customers/names`)
+async function populateCustomerNames() {
+    try {
+        await populateSelection($('#input-customerName')[0], `${window.location.origin}/api/customers/names`)
+    } catch (e) {
+        console.warn('Could not populateCustomerNames():', e)
+    }
 }
 
-function populateDepartmentNames() {
-    let customer = $('#input-customerName')[0].value
-    if (customer === undefined || customer === '') return
-    populateSelection($('#input-departmentName')[0], `${window.location.origin}/api/customers/${customer}/departments`)
+async function populateDepartmentNames() {
+    try {
+        let customer = $('#input-customerName')[0].value
+        if (customer === undefined || customer === '') return
+        await populateSelection($('#input-departmentName')[0], `${window.location.origin}/api/customers/${customer}/departments`)
+    } catch (e) {
+        console.warn('Could not populateDepartmentNames():', e)
+    }
+}
+
+async function populateUserNames() {
+    try {
+        await populateSelection($('#input-userName')[0], `${window.location.origin}/api/users/names`)
+    } catch (e) {
+        console.warn('Could not populateUserNames():', e)
+    }
 }
 
 async function populateSelection(selectTag, optionsUrl) {
@@ -50,6 +67,19 @@ function toLocalISOString(date) {
     return localDate.toISOString().slice(0, -1);
 }
 
+async function editPropertyAction(url, current) {
+    let value = prompt(`Neuer Wert (Aktuell: ${current}):`)
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(value)
+    })
+    if (response.ok) window.reload()
+    else alert(await response.text())
+}
+
 function submitCreateEntry() {
     let data = {
         'customerName': $('#input-customerName')[0].value,
@@ -65,14 +95,59 @@ function submitCreateEntry() {
     }
 
     fetch(`${window.location.origin}/api/timetableEntries/create`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        }, body: JSON.stringify(data)
     }).then(response => {
         if (Math.floor(response.status / 100) === 2) {
             window.location.href = `${window.location.origin}/timetable/${data.customerName}/${data.departmentName}/${data.startTime}`
+            return
+        }
+        response.text().then(alert)
+    })
+}
+
+function getUrlEntryInfo() {
+    let loc = window.location.href
+    let subpath = '/timetable/'
+    let start = loc.indexOf(subpath)
+    loc = loc.substring(start + subpath.length)
+    let obj = {}
+    let buf
+
+    obj.customerName = loc.substring(0, buf = loc.indexOf('/'))
+    loc = loc.substring(buf + 1)
+
+    obj.departmentName = loc.substring(0, buf = loc.indexOf('/'))
+    loc = loc.substring(buf + 1)
+
+    obj.startTime = loc.substring(0, loc.indexOf('/'))
+
+    return obj
+}
+
+function submitCreateAssignment() {
+    let data = {
+        'entryInfo': getUrlEntryInfo(),
+        'username': $('#input-userName')[0].value,
+        'startTime': $('#input-startTime')[0].value,
+        'endTime': $('#input-endTime')[0].value,
+        'notes': $('#input-notes')[0].value
+    }
+
+    if (data.username === '') {
+        alert("Bitte alle Felder ausfüllen")
+        return
+    }
+
+    fetch(`${window.location.origin}/api/timetableEntries/createAssignment`, {
+        method: 'POST', headers: {
+            'Content-Type': 'application/json'
+        }, body: JSON.stringify(data)
+    }).then(response => {
+        if (Math.floor(response.status / 100) === 2) {
+            let entryInfo = getUrlEntryInfo()
+            window.location.href = `${window.location.origin}/timetable/${entryInfo.customerName}/${entryInfo.departmentName}/${entryInfo.startTime}`
             return
         }
         response.text().then(alert)

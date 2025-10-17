@@ -5,6 +5,7 @@ import de.kaleidox.workbench.model.entry.Timeframe;
 import de.kaleidox.workbench.model.jpa.representant.User;
 import de.kaleidox.workbench.repo.UserRepository;
 import de.kaleidox.workbench.util.ApplicationContextProvider;
+import de.kaleidox.workbench.util.Exceptions;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @Embeddable
 @EqualsAndHashCode(of = "user")
-public class Assignment implements Timeframe {
+public class Assignment implements Timeframe, TimetableEntryReferent {
     public static Assignment parse(String parse) {
         var split    = parse.split(": *");
         var username = split[0];
@@ -55,6 +56,7 @@ public class Assignment implements Timeframe {
             @Nullable String notes
     ) {
         public CreateData {
+            if (username == null) throw Exceptions.noSuchUser();
             if (startTime != null && endTime != null) Timeframe.validateTimeframe(startTime, endTime);
         }
     }

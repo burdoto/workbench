@@ -20,12 +20,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "time")
-public class Interruption {
+public class Interruption implements TimetableEntryReferent {
     public static Interruption parse(String parse) {
         var split    = parse.split(", ");
-        var time     = TimetableEntry.HOUR_FORMATTER.parse(split[0]);
+        var time = TimetableEntry.parseDateTime(split[0]);
         var duration = Polyfill.parseDuration(split[1]);
-        return new Interruption().setTime(LocalDateTime.from(time)).setDuration(duration);
+        return new Interruption().setTime(time).setDuration(duration);
     }
 
     LocalDateTime time;

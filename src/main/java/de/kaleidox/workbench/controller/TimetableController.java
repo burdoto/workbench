@@ -74,7 +74,8 @@ public class TimetableController {
 
     @GetMapping("/{customerName}/{departmentName}/{startTime}")
     public String view(
-            Model model, @PathVariable @Param("customerName") String customerName,
+            Model model,
+            @PathVariable @Param("customerName") String customerName,
             @PathVariable @Param("departmentName") String departmentName,
             @PathVariable @Param("startTime") LocalDateTime startTime
     ) {
@@ -85,7 +86,26 @@ public class TimetableController {
         var eKey = new TimetableEntry.CompositeKey(customer, department, startTime);
         var entry = entries.findById(eKey).orElseThrow();
 
-        model.addAttribute("entry", entry);
+        model.addAttribute("entry", entry)
+                .addAttribute("dtype", "timetable_entry");
+
         return "timetable/view_entry";
+    }
+
+    @GetMapping("/{customerName}/{departmentName}/{startTime}/assignment/create")
+    public String createAssignment(
+            Model model, @PathVariable @Param("customerName") String customerName,
+            @PathVariable @Param("departmentName") String departmentName,
+            @PathVariable @Param("startTime") LocalDateTime startTime
+    ) {
+        var customer = customers.findById(customerName).orElseThrow();
+        var department = customer.findDepartment(departmentName)
+                .orElseGet(() -> departments.getOrCreateDefault(customer));
+
+        var eKey  = new TimetableEntry.CompositeKey(customer, department, startTime);
+        var entry = entries.findById(eKey).orElseThrow();
+
+        model.addAttribute("entry", entry);
+        return "timetable/assignment/create";
     }
 }
