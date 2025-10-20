@@ -4,8 +4,7 @@ function parameterValue(name) {
 }
 
 async function init() {
-    if (initCommon !== undefined)
-        await initCommon()
+    if (initCommon !== undefined) await initCommon()
 
     for (let filter of $('.filter')) {
         let name = filter.id.substring(7)
@@ -25,7 +24,7 @@ async function init() {
 
 async function populateCustomerNames() {
     try {
-        await populateSelection($('#input-customerName')[0], `${window.location.origin}/api/customers/names`)
+        await populateSelection($('#input-customerName'), `${window.location.origin}/api/customers/names`)
     } catch (e) {
         console.warn('Could not populateCustomerNames():', e)
     }
@@ -35,7 +34,7 @@ async function populateDepartmentNames() {
     try {
         let customer = $('#input-customerName')[0].value
         if (customer === undefined || customer === '') return
-        await populateSelection($('#input-departmentName')[0], `${window.location.origin}/api/customers/${customer}/departments`)
+        await populateSelection($('#input-departmentName'), `${window.location.origin}/api/customers/${customer}/departments`)
     } catch (e) {
         console.warn('Could not populateDepartmentNames():', e)
     }
@@ -43,21 +42,9 @@ async function populateDepartmentNames() {
 
 async function populateUserNames() {
     try {
-        await populateSelection($('#input-userName')[0], `${window.location.origin}/api/users/names`)
+        await populateSelection($('#input-userName'), `${window.location.origin}/api/users/names`)
     } catch (e) {
         console.warn('Could not populateUserNames():', e)
-    }
-}
-
-async function populateSelection(selectTag, optionsUrl) {
-    selectTag.innerHTML = ''
-
-    let elements = await fetch(optionsUrl).then(response => response.json())
-    for (let element of elements) {
-        let option = document.createElement('option')
-        option.innerText = element
-        option.value = element
-        selectTag.appendChild(option)
     }
 }
 
@@ -97,6 +84,39 @@ function submitCreateEntry() {
     })
 }
 
+function editMode() {
+    for (let each of $('.view-content')) each.style.display = 'none'
+    for (let each of $('.view-edit')) each.style.display = 'inherit'
+}
+
+function applyEdits() {
+    let info = getUrlEntryInfo()
+    let data = {
+        'customerName': info.customerName,
+        'departmentName': info.departmentName,
+        'startTime': info.startTime,
+        'newEndTime': $('#input-endTime')[0].value,
+        'newNotes': $('#input-notes')[0].value
+    }
+
+    if (data.customerName === '' || data.departmentName === '' || data.startTime === data.endTime) {
+        alert("Bitte alle Felder ausfüllen")
+        return
+    }
+
+    fetch(`${window.location.origin}/api/timetableEntries/edit`, {
+        method: 'POST', headers: {
+            'Content-Type': 'application/json'
+        }, body: JSON.stringify(data)
+    }).then(response => {
+        if (Math.floor(response.status / 100) === 2) {
+            window.location.href = `${window.location.origin}/timetable/${data.customerName}/${data.departmentName}/${data.startTime}`
+            return
+        }
+        response.text().then(alert)
+    })
+}
+
 function getUrlEntryInfo() {
     let loc = window.location.href
     let subpath = '/timetable/'
@@ -111,7 +131,8 @@ function getUrlEntryInfo() {
     obj.departmentName = loc.substring(0, buf = loc.indexOf('/'))
     loc = loc.substring(buf + 1)
 
-    obj.startTime = loc.substring(0, loc.indexOf('/'))
+    buf = loc.indexOf('/')
+    obj.startTime = loc.substring(0, buf === -1 ? loc.length : buf)
 
     return obj
 }

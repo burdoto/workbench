@@ -7,6 +7,7 @@ import de.kaleidox.workbench.model.jpa.representant.User;
 import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
 import de.kaleidox.workbench.model.jpa.representant.customer.Department;
 import de.kaleidox.workbench.repo.CustomerRepository;
+import de.kaleidox.workbench.repo.TimetableEntryRepository;
 import de.kaleidox.workbench.util.Exceptions;
 import jakarta.persistence.Basic;
 import jakarta.persistence.ElementCollection;
@@ -77,8 +78,18 @@ public class TimetableEntry implements Timeframe, TimetableEntryReferent {
     }
 
     @JsonIgnore
+    public String getStartTimeString() {
+        return startTime.toString();
+    }
+
+    @JsonIgnore
     public String getEndTimeText() {
         return endTime.format(HOUR_FORMATTER);
+    }
+
+    @JsonIgnore
+    public String getEndTimeString() {
+        return endTime.toString();
     }
 
     @JsonIgnore
@@ -134,7 +145,7 @@ public class TimetableEntry implements Timeframe, TimetableEntryReferent {
         }
 
         @Override
-        public Object toCompositeKey() {
+        public CompositeKey toCompositeKey() {
             var customer = bean(CustomerRepository.class).findById(customerName)
                     .orElseThrow(Exceptions::noSuchCustomer);
             return new CompositeKey(customer,
@@ -152,6 +163,34 @@ public class TimetableEntry implements Timeframe, TimetableEntryReferent {
     ) {
         public CreateData {
             Timeframe.validateTimeframe(startTime, endTime);
+        }
+    }
+
+    public record EditData(
+            @NotNull String customerName,
+            @NotNull String departmentName,
+            @NotNull LocalDateTime startTime,
+            @Nullable LocalDateTime newEndTime,
+            @Nullable String newNotes
+    ) {
+        public EditData {
+            Timeframe.validateTimeframe(startTime, newEndTime);
+        }
+
+        @Override
+        public LocalDateTime newEndTime() {
+            return newEndTime == null ? old().endTime : newEndTime;
+        }
+
+        @Override
+        public String newNotes() {
+            return newNotes == null ? old().notes : newNotes;
+        }
+
+        public TimetableEntry old() {
+            return bean(TimetableEntryRepository.class).findById(new Info(customerName,
+                    departmentName,
+                    startTime).toCompositeKey()).orElseThrow();
         }
     }
 }

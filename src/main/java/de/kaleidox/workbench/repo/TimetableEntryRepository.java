@@ -60,8 +60,21 @@ public interface TimetableEntryRepository extends CrudRepository<TimetableEntry,
                 values (?#{#data.customerName()}, ?#{#data.departmentName()},
                                     ?#{#data.startTime()}, ?#{#data.endTime()}, ?#{#data.notes()}, ?#{#auth.name});
             """)
-    void create(
-            @Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
+    void create(@Param("auth") Authentication auth, @Param("data") @RequestBody TimetableEntry.CreateData data);
+
+    @Modifying
+    @ResponseBody
+    @Transactional
+    @PostMapping("edit")
+    @Query(value = """
+            update timetable_entry
+                set end_time = ?#{#data.newEndTime()},
+                    notes = ?#{#data.newNotes()}
+                where customer_name = ?#{#data.customerName()}
+                    and department_name = ?#{#data.departmentName()}
+                    and start_time = ?#{#data.startTime()}
+            """, nativeQuery = true)
+    void edit(@Param("data") @RequestBody TimetableEntry.EditData data);
 
     @Modifying
     @ResponseBody

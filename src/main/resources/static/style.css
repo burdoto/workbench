@@ -234,6 +234,13 @@ body {
     justify-content: center;
 }
 
+.view-content {
+}
+
+.view-edit {
+    display: none;
+}
+
 input {
     padding: 0 5px;
     width: 100%;

@@ -9,25 +9,25 @@
     <div class="ui-panel-2">
         <label for="input-customerName">Kunde</label> & <label for="input-departmentName">Abteilung</label>
         <br/>
-        <select class="ui-select-big" id="input-customerName" name="customerName" onchange="populateDepartmentNames()" required size="8">
+        <select class="ui-select-big" id="input-customerName" onchange="populateDepartmentNames()" required size="8">
             <option>- wird geladen -</option>
         </select>
-        <select class="ui-select-big" id="input-departmentName" name="departmentName" required size="8">
+        <select class="ui-select-big" id="input-departmentName" required size="8">
             <option>- bitte Kunde wählen -</option>
         </select>
     </div>
     <div class="ui-panel-2">
         <label for="input-startTime">Anfang</label>
-        <input class="input-datetime" id="input-startTime" name="startTime" required type="datetime-local" value="now">
+        <input class="input-datetime" id="input-startTime" required type="datetime-local" value="now">
     </div>
     <div class="ui-panel-2">
         <label for="input-endTime">Ende</label>
-        <input class="input-datetime" id="input-endTime" name="endTime" required type="datetime-local" value="now">
+        <input class="input-datetime" id="input-endTime" required type="datetime-local" value="now">
     </div>
     <div class="ui-panel-2">
         <label for="input-notes">Beschreibung</label>
         <br/>
-        <textarea cols="80" id="input-notes" name="notes" rows="5"></textarea>
+        <textarea cols="80" id="input-notes" rows="5"></textarea>
     </div>
     <input onclick="submitCreateEntry()" type="submit">
 </div>

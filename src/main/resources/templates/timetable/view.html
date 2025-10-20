@@ -9,28 +9,40 @@
 <input id="info" th:value="${info}" type="hidden">
 <div class="ui-panel-1">
     <h2>Eintrag von <span th:text="${entry.dayText}"></span></h2>
-    <table class="ui-panel-2">
-        <tr>
-            <td>Kunde</td>
-            <td th:text="${entry.customer.name}"></td>
-        </tr>
-        <tr>
-            <td>Abteilung</td>
-            <td class="edit-property" property="departmentName" th:text="${entry.department.name}"></td>
-        </tr>
-        <tr>
-            <td>Beginn</td>
-            <td class="edit-property" property="startTime" th:text="${entry.startTimeText}"></td>
-        </tr>
-        <tr>
-            <td>Ende</td>
-            <td class="edit-property" property="endTime" th:text="${entry.endTimeText}"></td>
-        </tr>
-        <tr>
-            <td>Bemerkungen</td>
-            <td class="edit-property" property="notes" th:text="${entry.notes.isBlank() ? '(keine)' : entry.notes}"></td>
-        </tr>
-    </table>
+    <div class="ui-panel-2">
+        <h6><a class="ui-button view-content" onclick="editMode()">Bearbeiten...</a></h6>
+        <input id="input-customerName" th:value="${entry.customer.name}" type="hidden">
+        <table>
+            <tr>
+                <td>Kunde</td>
+                <td th:text="${entry.customer.name}"></td>
+            </tr>
+            <tr>
+                <td>Abteilung</td>
+                <td th:text="${entry.department.name}"></td>
+            </tr>
+            <tr>
+                <td>Beginn</td>
+                <td th:text="${entry.startTimeText}"></td>
+            </tr>
+            <tr>
+                <td><label for="input-endTime">Ende</label></td>
+                <td class="edit-property" property="endTime">
+                    <span class="view-content" th:text="${entry.endTimeText}"></span>
+                    <input class="view-edit" id="input-endTime" th:value="${entry.endTimeString}" type="datetime-local">
+                </td>
+            </tr>
+            <tr>
+                <td><label for="input-notes">Bemerkungen</label></td>
+                <td class="edit-property" property="notes">
+                    <span class="view-content" th:text="${entry.notes.isBlank() ? '(keine)' : entry.notes}"></span>
+                    <textarea class="view-edit" cols="80" id="input-notes" rows="5"
+                              th:text="${entry.notes.isBlank() ? '(keine)' : entry.notes}"></textarea>
+                </td>
+            </tr>
+        </table>
+        <h6><a class="ui-button view-edit" onclick="applyEdits()">Übernehmen</a></h6>
+    </div>
     <div class="ui-panel-2">
         <h3>Aufgaben</h3>
         <h6><a class="ui-button"
