@@ -1,14 +1,12 @@
 package de.kaleidox.workbench.model.jpa.timetable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.kaleidox.workbench.controller.PopupController;
 import de.kaleidox.workbench.model.EntityInfo;
 import de.kaleidox.workbench.model.entry.Timeframe;
 import de.kaleidox.workbench.model.jpa.representant.User;
 import de.kaleidox.workbench.model.jpa.representant.customer.Customer;
 import de.kaleidox.workbench.model.jpa.representant.customer.Department;
 import de.kaleidox.workbench.repo.CustomerRepository;
-import de.kaleidox.workbench.repo.TimetableEntryRepository;
 import de.kaleidox.workbench.util.Exceptions;
 import jakarta.persistence.Basic;
 import jakarta.persistence.ElementCollection;
@@ -19,7 +17,6 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.comroid.annotations.Instance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,11 +26,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 import static de.kaleidox.workbench.util.ApplicationContextProvider.*;
 import static java.time.format.DateTimeFormatter.*;
-import static org.comroid.api.Polyfill.*;
 
 @Data
 @Entity
@@ -135,7 +130,7 @@ public class TimetableEntry implements Timeframe, TimetableEntryReferent {
 
         @Override
         public String toSerializedString() {
-            return "%s,%s,%s";
+            return "%s,%s,%s".formatted(customerName, departmentName, startTime);
         }
 
         @Override
@@ -145,29 +140,6 @@ public class TimetableEntry implements Timeframe, TimetableEntryReferent {
             return new CompositeKey(customer,
                     customer.findDepartment(departmentName).orElseThrow(Exceptions::noSuchDepartment),
                     startTime);
-        }
-
-        public enum KeyProvider implements EntityInfo.Provider<Info> {
-            @Instance INSTANCE;
-
-            KeyProvider() {
-                PopupController.INFO_SERIALIZATION_PROVIDERS.put(TimetableEntryReferent.class, this);
-            }
-
-            @Override
-            public Optional<?> findById(Info info) {
-                return bean(TimetableEntryRepository.class).findById(uncheckedCast(info.toCompositeKey()));
-            }
-
-            @Override
-            public String forward(Info info) {
-                return info.toSerializedString();
-            }
-
-            @Override
-            public Info backward(String str) {
-                return parse(str);
-            }
         }
     }
 

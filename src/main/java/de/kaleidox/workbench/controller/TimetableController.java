@@ -7,7 +7,6 @@ import de.kaleidox.workbench.repo.TimetableEntryRepository;
 import de.kaleidox.workbench.repo.UserRepository;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +35,23 @@ public class TimetableController {
     @ModelAttribute("customers")
     public CustomerRepository customers() {
         return customers;
+    }
+
+    @ModelAttribute("entry")
+    @SuppressWarnings("MVCPathVariableInspection")
+    private TimetableEntry findEntry(
+            @PathVariable(value = "customerName", required = false) String customerName,
+            @PathVariable(value = "departmentName", required = false) String departmentName,
+            @PathVariable(value = "startTime", required = false) LocalDateTime startTime
+    ) {
+        if (customerName == null) return null;
+
+        var customer = customers.findById(customerName).orElseThrow();
+        var department = customer.findDepartment(departmentName)
+                .orElseGet(() -> departments.getOrCreateDefault(customer));
+
+        var eKey = new TimetableEntry.CompositeKey(customer, department, startTime);
+        return entries.findById(eKey).orElseThrow();
     }
 
     @GetMapping
@@ -69,43 +85,21 @@ public class TimetableController {
 
     @GetMapping("/create")
     public String create() {
-        return "timetable/create_entry";
+        return "timetable/create";
     }
 
     @GetMapping("/{customerName}/{departmentName}/{startTime}")
-    public String view(
-            Model model,
-            @PathVariable @Param("customerName") String customerName,
-            @PathVariable @Param("departmentName") String departmentName,
-            @PathVariable @Param("startTime") LocalDateTime startTime
-    ) {
-        var customer   = customers.findById(customerName).orElseThrow();
-        var department = customer.findDepartment(departmentName)
-                .orElseGet(() -> departments.getOrCreateDefault(customer));
-
-        var eKey = new TimetableEntry.CompositeKey(customer, department, startTime);
-        var entry = entries.findById(eKey).orElseThrow();
-
-        model.addAttribute("entry", entry)
-                .addAttribute("dtype", "timetable_entry");
-
-        return "timetable/view_entry";
+    public String view() {
+        return "timetable/view";
     }
 
     @GetMapping("/{customerName}/{departmentName}/{startTime}/assignment/create")
-    public String createAssignment(
-            Model model, @PathVariable @Param("customerName") String customerName,
-            @PathVariable @Param("departmentName") String departmentName,
-            @PathVariable @Param("startTime") LocalDateTime startTime
-    ) {
-        var customer = customers.findById(customerName).orElseThrow();
-        var department = customer.findDepartment(departmentName)
-                .orElseGet(() -> departments.getOrCreateDefault(customer));
-
-        var eKey  = new TimetableEntry.CompositeKey(customer, department, startTime);
-        var entry = entries.findById(eKey).orElseThrow();
-
-        model.addAttribute("entry", entry);
+    public String createAssignment() {
         return "timetable/assignment/create";
+    }
+
+    @GetMapping("/{customerName}/{departmentName}/{startTime}/interruption/create")
+    public String createInterruption() {
+        return "timetable/interruption/create";
     }
 }

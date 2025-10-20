@@ -4,6 +4,9 @@ function parameterValue(name) {
 }
 
 async function init() {
+    if (initCommon !== undefined)
+        await initCommon()
+
     for (let filter of $('.filter')) {
         let name = filter.id.substring(7)
         let value = parameterValue(name);
@@ -65,19 +68,6 @@ function toLocalISOString(date) {
     localDate.setSeconds(null);
     localDate.setMilliseconds(null);
     return localDate.toISOString().slice(0, -1);
-}
-
-async function editPropertyAction(url, current) {
-    let value = prompt(`Neuer Wert (Aktuell: ${current}):`)
-    let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(value)
-    })
-    if (response.ok) window.reload()
-    else alert(await response.text())
 }
 
 function submitCreateEntry() {

@@ -164,6 +164,12 @@ body {
     background-color: var(--button-hover-background-color);
 }
 
+.ui-edit-link {
+    font-size: 70%;
+    padding-left: 5px;
+    background: inherit;
+}
+
 .ui-select-big {
     width: 30%;
 }
