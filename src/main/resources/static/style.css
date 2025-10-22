@@ -196,6 +196,17 @@ body {
     margin: 3px 0;
 }
 
+.ui-collapse {
+    display: none;
+}
+
+.ui-collapse-button {
+}
+
+.ui-collapse-button:hover {
+    cursor: pointer;
+}
+
 /* utility components */
 .null-text {
     font-style: italic;

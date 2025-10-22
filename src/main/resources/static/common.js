@@ -7,6 +7,13 @@ function isNameSane(name) {
 }
 
 async function initCommon() {
+    for (let tag of $('.ui-collapse-button')) {
+        tag.onclick = function () {
+            let id = tag.id.substring(4)
+            let box = $('#' + id)[0]
+            box.style.display = box.style.display === 'none' || box.style.display === '' ? 'block' : 'none'
+        }
+    }
 }
 
 async function populateSelection(tags, optionsUrl) {

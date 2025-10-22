@@ -9,10 +9,11 @@
     <h2>Seriennummer: <span th:text="${result.getDeviceSn()}"></span></h2>
     <h1>Tests</h1>
     <div class="ui-panel-2" th:each="test: ${result.getTests()}">
-        <h2 class="ui-collapse-button">Test #<span th:text="${test.number}"></span> - Gerät #<span th:text="${test.applianceNumber}"></span> (<span
+        <h2 class="ui-collapse-button" th:id="'btn-testBox-'+${test.number}">Test #<span th:text="${test.number}"></span> - Gerät #<span
+                th:text="${test.applianceNumber}"></span> (<span
                 th:text="${test.description}"></span>)
         </h2>
-        <div class="ui-collapse">
+        <div class="ui-collapse" th:id="'testBox-'+${test.number}">
             <table>
                 <!--<tr>
                     <td>Testnummer</td>
@@ -51,8 +52,8 @@
                     <td th:text="${test.text}"></td>
                 </tr>
             </table>
-            <h2 class="ui-collapse-button">Checks</h2>
-            <div class="ui-collapse">
+            <h2 class="ui-collapse-button" th:id="'btn-checksBox-'+${test.number}">Checks (<span th:text="${test.checks.size()}"></span>)</h2>
+            <div class="ui-collapse" th:id="'checksBox-'+${test.number}">
                 <div class="ui-panel-3" th:each="check: ${test.checks}">
                     <h3><span th:text="${check.name}"></span> (<span th:text="${check.passedString}"></span>)</h3>
                     <table>
