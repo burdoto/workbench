@@ -16,6 +16,12 @@
             </tr>
         </table>
     </form>
+    <div class="ui-panel-2">
+        <h2>Vorhandene Scans:</h2>
+        <ul>
+            <li th:each="id: ${available}"><a th:href="'/flk/'+${id}" th:text="${id}"></a></li>
+        </ul>
+    </div>
 </div>
 <div class="ui-footer" th:insert="~{/layout/footer}"></div>
 </body>

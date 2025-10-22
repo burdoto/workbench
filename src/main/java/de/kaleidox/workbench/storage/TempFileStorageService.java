@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @Service
 public class TempFileStorageService implements StorageService {
@@ -44,5 +46,10 @@ public class TempFileStorageService implements StorageService {
     @SneakyThrows
     public InputStream load(String id) {
         return new FileInputStream(new File(baseDir, id));
+    }
+
+    @Override
+    public Stream<String> all() {
+        return Arrays.stream(baseDir.list());
     }
 }
