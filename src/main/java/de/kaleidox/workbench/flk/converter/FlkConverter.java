@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class FlkConverter implements StorageContentConverter {
             if (iter.getCurrent().isEmpty()) $.push();
         }
 
-        var resultData = objectMapper.writeValueAsBytes(file.build());
-        return storage.store(new ByteArrayInputStream(resultData), "json");
+        var resultData = objectMapper.writeValueAsString(file.build());
+        return storage.store(new ByteArrayInputStream(resultData.getBytes(StandardCharsets.US_ASCII)), ".json");
     }
 }

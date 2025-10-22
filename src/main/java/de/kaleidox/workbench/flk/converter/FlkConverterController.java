@@ -44,7 +44,7 @@ public class FlkConverterController {
         switch (ext.toLowerCase()) {
             case "flk":
                 id = converter.convert(id);
-                return "redirect:/flk/%s.json".formatted(id.substring(0, id.lastIndexOf('.') - 1));
+                return "redirect:/flk/" + id;
             case "json":
                 var resultData = storage.load(id);
                 result = objectMapper.readValue(resultData, FlkResultsFile.class);

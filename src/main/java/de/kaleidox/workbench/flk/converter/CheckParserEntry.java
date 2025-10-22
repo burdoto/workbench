@@ -17,15 +17,19 @@ public enum CheckParserEntry implements Named, Predicate<String> {
         var value = iter.getCurrent();
         var name  = value.substring(0, 16);
 
-        check[0].name(name);
         check[0].passed(value.charAt(17) == 'P');
 
-        Arrays.stream(CheckParserEntry.values())
-                .filter(cpe -> cpe.test(name))
-                .findAny()
-                .ifPresent(cpe -> cpe.accept(iter, check[0]));
+        Arrays.stream(CheckParserEntry.values()).filter(cpe -> cpe.test(name)).findAny().ifPresent(cpe -> {
+            check[0].name(cpe.getName());
+            cpe.accept(iter, check[0]);
+        });
 
         return check[0].build();
+    }
+
+    @Override
+    public String getName() {
+        return Named.super.getName().replaceAll("_", " ");
     }
 
     private void accept(BetterIterator<String> iter, Check.Builder check) {
@@ -58,11 +62,6 @@ public enum CheckParserEntry implements Named, Predicate<String> {
                 }
             }
         };
-    }
-
-    @Override
-    public String getName() {
-        return Named.super.getName().replaceAll("_", " ");
     }
 
     @Override
