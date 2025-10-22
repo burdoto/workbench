@@ -10,8 +10,7 @@
     <h1>Tests</h1>
     <div class="ui-panel-2" th:each="test: ${result.getTests()}">
         <h2 class="ui-collapse-button" th:id="'btn-testBox-'+${test.number}">Test #<span th:text="${test.number}"></span> - Gerät #<span
-                th:text="${test.applianceNumber}"></span> (<span
-                th:text="${test.description}"></span>)
+                th:text="${test.applianceNumber}"></span> (<span th:text="${test.description}"></span>)
         </h2>
         <div class="ui-collapse" th:id="'testBox-'+${test.number}">
             <table>

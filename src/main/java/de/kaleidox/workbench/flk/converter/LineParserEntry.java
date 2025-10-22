@@ -140,7 +140,7 @@ public enum LineParserEntry implements Named, Predicate<String> {
             val.append(current);
             iter.next();
         } while (i++ < lines);
-        return val.toString();
+        return val.toString().trim();
     }
 
     @Override
