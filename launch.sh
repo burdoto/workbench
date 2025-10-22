@@ -2,5 +2,6 @@
 
 ./pull.sh
 
-./gradlew bootWar
-java -jar build/libs/workbench-0.war
+./gradle bootRun
+#./gradlew bootWar
+#java -jar build/libs/workbench-0.war
