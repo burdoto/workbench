@@ -6,4 +6,9 @@ import lombok.Value;
 public class TestMode {
     int    id;
     String desc;
+
+    @Override
+    public String toString() {
+        return "%s (%d)".formatted(desc, id);
+    }
 }
