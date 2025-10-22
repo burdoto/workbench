@@ -627,6 +627,9 @@ td .state-switch {
     transform: translate(-50%, -50%) rotate(-45deg);
 }
 
+table {
+    table-layout: fixed
+}
 
 /* animations */
 @keyframes spin {
