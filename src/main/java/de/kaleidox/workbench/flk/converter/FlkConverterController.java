@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
+
 @Controller
 @RequestMapping("/flk")
 public class FlkConverterController {
@@ -29,7 +31,7 @@ public class FlkConverterController {
     @PostMapping
     @SneakyThrows
     public String upload(@RequestParam("file") MultipartFile file) {
-        var filename = file.getOriginalFilename();
+        var filename = Objects.requireNonNull(file.getOriginalFilename(), "missing filename");
         var ext      = filename.substring(filename.lastIndexOf('.'));
         var id       = storage.store(file.getInputStream(), ext);
         return "redirect:/flk/" + id;
