@@ -6,34 +6,67 @@ import org.comroid.api.func.BetterIterator;
 import org.comroid.units.UValue;
 import org.comroid.units.Unit;
 
-public enum CheckParserEntry implements Named {
+import java.util.Arrays;
+import java.util.function.Predicate;
+
+public enum CheckParserEntry implements Named, Predicate<String> {
     VISUAL_CHECK, LEAD_CONTINUITY, BOND_RANGE, INS, SUBST;
 
     public static Check read(BetterIterator<String> iter) {
-        var check = Check.builder();
+        var check = new Check.Builder[]{ Check.builder() };
         var value = iter.getCurrent();
         var name  = value.substring(0, 16);
 
-        check.name(name);
-        check.passed(value.charAt(17) == 'P');
+        check[0].name(name);
+        check[0].passed(value.charAt(17) == 'P');
 
-        while (!iter.getCurrent().startsWith("LIMIT")) {
-            var next = iter.next();
-            if (next.startsWith(name)) {
-                var trim = next.substring(name.length()).trim();
-                if (trim.matches("\\d.+")) trim = trim.substring(1).trim();
-                var eon  = trim.lastIndexOf(' ');
-                var num  = Double.parseDouble(trim.substring(0, eon));
-                var unit = Unit.builder().name(trim.substring(eon)).build();
-                check.value(UValue.builder().value(num).unit(unit).build());
-            } else iter.previous();
-        }
+        Arrays.stream(CheckParserEntry.values())
+                .filter(cpe -> cpe.test(name))
+                .findAny()
+                .ifPresent(cpe -> cpe.accept(iter, check[0]));
 
-        return check.build();
+        return check[0].build();
+    }
+
+    private void accept(BetterIterator<String> iter, Check.Builder check) {
+        new Object() {
+            String buf = iter.getCurrent();
+
+            {
+                while (!buf.startsWith("LIMIT")) {
+                    check.value(parse(getName()));
+                    buf = iter.next();
+                }
+
+                if (buf.startsWith("LIMIT")) check.limit(parse("LIMIT"));
+                else iter.previous();
+            }
+
+            UValue parse(String name) {
+                var trim = buf.substring(name.length()).trim();
+                if (trim.matches("\\d\\s+[->0-9].+")) trim = trim.substring(1).trim();
+                if (trim.matches(".+\\sP")) trim = trim.substring(0, trim.length() - 2).trim();
+                var    split = trim.split(" ");
+                double num;
+                Unit   unit;
+                if (split.length == 1) {
+                    return UValue.parse(split[0]);
+                } else {
+                    num  = split[0].startsWith(">") ? 299 : Double.parseDouble(split[0]);
+                    unit = new Unit(split[1]);
+                    return UValue.builder().value(num).unit(unit).build();
+                }
+            }
+        };
     }
 
     @Override
     public String getName() {
         return Named.super.getName().replaceAll("_", " ");
+    }
+
+    @Override
+    public boolean test(String s) {
+        return s.startsWith(getName());
     }
 }
