@@ -5,17 +5,22 @@ import lombok.SneakyThrows;
 import org.comroid.api.net.Token;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 @Service
+@Controller
+@RequestMapping("/storage/temp")
 public class TempFileStorageService implements StorageService {
     final File baseDir = new File(System.getProperty("java.io.tmpdir"), getClass().getSimpleName() + '/');
 
@@ -48,8 +53,12 @@ public class TempFileStorageService implements StorageService {
         return new FileInputStream(new File(baseDir, id));
     }
 
-    @Override
-    public Stream<String> all() {
-        return Arrays.stream(baseDir.list());
+    @SneakyThrows
+    @ResponseBody
+    @GetMapping("/raw/{id}")
+    public byte[] raw(@PathVariable("id") String id) {
+        try (var input = load(id)) {
+            return input.readAllBytes();
+        }
     }
 }

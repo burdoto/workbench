@@ -3,7 +3,6 @@ package de.kaleidox.workbench;
 import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.kaleidox.workbench.model.config.AppConfig;
 import lombok.extern.java.Log;
@@ -32,8 +31,8 @@ import java.util.Objects;
 
 @Log
 @ImportResource({ "classpath:beans.xml" })
-@EntityScan(basePackages = "de.kaleidox.workbench.model.jpa")
-@EnableJpaRepositories(basePackages = "de.kaleidox.workbench.repo")
+@EntityScan(basePackages = { "de.kaleidox.workbench.model.jpa", "de.kaleidox.workbench.flk.model.entity" })
+@EnableJpaRepositories(basePackages = { "de.kaleidox.workbench.repo", "de.kaleidox.workbench.flk.model.repo" })
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 public class WorkbenchApplication implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
     public static void main(String[] args) {

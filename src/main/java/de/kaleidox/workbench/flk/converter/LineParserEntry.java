@@ -1,8 +1,8 @@
 package de.kaleidox.workbench.flk.converter;
 
 import de.kaleidox.workbench.flk.FlkResultsFile;
-import de.kaleidox.workbench.flk.model.Test;
-import de.kaleidox.workbench.flk.model.TestMode;
+import de.kaleidox.workbench.flk.model.data.Test;
+import de.kaleidox.workbench.flk.model.data.TestMode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.comroid.api.attr.Named;

@@ -1,6 +1,6 @@
 package de.kaleidox.workbench.flk.converter;
 
-import de.kaleidox.workbench.flk.model.Check;
+import de.kaleidox.workbench.flk.model.data.Check;
 import org.comroid.api.attr.Named;
 import org.comroid.api.func.BetterIterator;
 import org.comroid.units.UValue;

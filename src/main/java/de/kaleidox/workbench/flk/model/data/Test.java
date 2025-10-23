@@ -1,4 +1,4 @@
-package de.kaleidox.workbench.flk.model;
+package de.kaleidox.workbench.flk.model.data;
 
 import lombok.Builder;
 import lombok.Singular;

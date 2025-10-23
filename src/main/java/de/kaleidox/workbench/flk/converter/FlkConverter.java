@@ -2,7 +2,9 @@ package de.kaleidox.workbench.flk.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.kaleidox.workbench.flk.FlkResultsFile;
-import de.kaleidox.workbench.flk.model.Test;
+import de.kaleidox.workbench.flk.model.data.Test;
+import de.kaleidox.workbench.flk.model.entity.FlkScan;
+import de.kaleidox.workbench.flk.model.repo.FlkScanRepository;
 import de.kaleidox.workbench.model.abstr.StorageService;
 import de.kaleidox.workbench.storage.StorageContentConverter;
 import lombok.SneakyThrows;
@@ -22,8 +24,9 @@ import java.util.List;
 @Log
 @Service
 public class FlkConverter implements StorageContentConverter {
-    @Autowired StorageService storage;
-    @Autowired ObjectMapper   objectMapper;
+    @Autowired StorageService    storage;
+    @Autowired ObjectMapper      objectMapper;
+    @Autowired FlkScanRepository scans;
 
     @Override
     @SneakyThrows
@@ -63,6 +66,8 @@ public class FlkConverter implements StorageContentConverter {
         }
 
         var resultData = objectMapper.writeValueAsString(file.build());
-        return storage.store(new ByteArrayInputStream(resultData.getBytes(StandardCharsets.US_ASCII)), ".json");
+        var resultId = storage.store(new ByteArrayInputStream(resultData.getBytes(StandardCharsets.US_ASCII)), ".json");
+        scans.save(new FlkScan(id, resultId));
+        return resultId;
     }
 }

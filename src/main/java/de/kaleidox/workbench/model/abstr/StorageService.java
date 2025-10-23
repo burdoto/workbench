@@ -1,7 +1,6 @@
 package de.kaleidox.workbench.model.abstr;
 
 import java.io.InputStream;
-import java.util.stream.Stream;
 
 public interface StorageService {
     /**
@@ -24,9 +23,4 @@ public interface StorageService {
      * @return the data from storage
      */
     InputStream load(String id);
-
-    /**
-     * @return all existing data identifiers
-     */
-    Stream<String> all();
 }

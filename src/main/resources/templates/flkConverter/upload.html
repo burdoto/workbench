@@ -18,9 +18,27 @@
     </form>
     <div class="ui-panel-2">
         <h2>Vorhandene Scans:</h2>
-        <ul>
-            <li th:each="id: ${available}"><a th:href="'/flk/'+${id}" th:text="${id}"></a></li>
-        </ul>
+        <table>
+            <thead>
+            <tr>
+                <td>Datum</td>
+                <td>Eingabedatei</td>
+                <td>Ergebnis</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="scan: ${available}">
+                <td th:text="${scan.timestamp}"></td>
+                <td>
+                    <a th:href="'/storage/temp/raw/'+${scan.sourceFile}" th:text="${scan.sourceFile}"></a>
+                </td>
+                <td>
+                    <a th:href="'/flk/'+${scan.resultFile}" th:text="${scan.resultFile}"></a>
+                    <a class="ui-edit-link" th:href="'/storage/temp/raw/'+${scan.resultFile}">Rohdaten...</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 <div class="ui-footer" th:insert="~{/layout/footer}"></div>

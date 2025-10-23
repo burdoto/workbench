@@ -1,9 +1,12 @@
-package de.kaleidox.workbench.flk.converter;
+package de.kaleidox.workbench.flk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.kaleidox.workbench.flk.FlkResultsFile;
+import de.kaleidox.workbench.flk.converter.FlkConverter;
+import de.kaleidox.workbench.flk.model.entity.FlkScan;
+import de.kaleidox.workbench.flk.model.repo.FlkScanRepository;
 import de.kaleidox.workbench.model.abstr.StorageService;
 import lombok.SneakyThrows;
+import org.comroid.api.func.util.Streams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,13 +24,14 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/flk")
 public class FlkConverterController {
-    @Autowired StorageService storage;
-    @Autowired FlkConverter   converter;
-    @Autowired ObjectMapper   objectMapper;
+    @Autowired StorageService    storage;
+    @Autowired FlkConverter      converter;
+    @Autowired ObjectMapper      objectMapper;
+    @Autowired FlkScanRepository scans;
 
     @ModelAttribute("available")
-    public List<String> available() {
-        return storage.all().filter(str -> str.endsWith(".json")).toList();
+    public List<FlkScan> available() {
+        return Streams.of(scans.findAll()).toList();
     }
 
     @GetMapping

@@ -1,6 +1,6 @@
 package de.kaleidox.workbench.flk;
 
-import de.kaleidox.workbench.flk.model.Test;
+import de.kaleidox.workbench.flk.model.data.Test;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
