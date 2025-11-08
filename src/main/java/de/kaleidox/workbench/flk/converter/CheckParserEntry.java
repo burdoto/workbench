@@ -38,7 +38,8 @@ public enum CheckParserEntry implements Named, Predicate<String> {
 
             {
                 while (!buf.startsWith("LIMIT")) {
-                    check.value(parse(getName()));
+                    if (!buf.matches(".+\\sP"))
+                        check.value(parse(getName()));
                     buf = iter.next();
                 }
 
